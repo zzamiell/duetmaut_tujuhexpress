@@ -14,10 +14,10 @@
           <div class="card-header">
             <h4 class="card-title"> Order List </h4>
 
-            
+
 
             <div> <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
-              
+
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
                 Import Order
@@ -28,16 +28,16 @@
             </button>
             </div>
 
-            
-            
 
-            
+
+
+
 
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
                 <p>{{ $message }}</p>
             </div>
-            
+
         @endif
         <div class="card-body">
           <div class="table-responsive">
@@ -58,14 +58,14 @@
                 <th>
                   Service Type
                 </th>
-               
+
                 <th>
                   Total Fee
                 </th>
                 <th>
                   Status
                 </th>
-               
+
               </thead>
               <tbody>
 
@@ -75,20 +75,20 @@
                   <td>{{ $order->awb }}</td>
                   <td>{{ $order->ref_id }}</td>
                   <td>{{ $order->account_name }}</td>
-                  
+
                   <td>{{ $order->service_type }}</td>
                   <td>{{ $order->total_fee }}</td>
-                  <td><a class="btn btn-primary" href="{{ route('orders.show',$order->awb)}}">{{ $order->order_status}}</a>
+                  <td><a class="btn btn-primary" href="{{ route('orders.show',$order->id)}}">{{ $order->order_status}}</a>
                     {{ csrf_field() }}</td>
 
 
 
                 </tr>
-                @endforeach 
-                
+                @endforeach
+
               </tbody>
             </table>
-            
+
 
                 <div> <a class="btn btn-success" href="{{ route('orders.export')}}">Export</a>
                 </div>
@@ -104,15 +104,15 @@
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
-                      
+
                       <div class="modal-body">
                         <form action="{{ route('orders.import') }}" method="POST" enctype="multipart/form-data">
                           {{ csrf_field() }}
                             <input type="file" name="import_file" />
-                            
+
                             <input type="submit" value="import" class="btn btn-primary"/>
-                          
-                        </form>  
+
+                        </form>
 
                       </div>
                     </div>
@@ -128,15 +128,15 @@
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
-                      
+
                       <div class="modal-body">
                         <form action="{{ route('orders.importupdate') }}" method="POST" enctype="multipart/form-data">
                           {{ csrf_field() }}
                             <input type="file" name="import_update_file" />
-                            
+
                             <input type="submit" value="import" class="btn btn-primary"/>
-                          
-                        </form>  
+
+                        </form>
 
                       </div>
                     </div>
@@ -151,7 +151,7 @@
           </div>
         </div>
       </div>
-      
+
 
 @endsection
 @push('js')
@@ -159,7 +159,7 @@
     $(document).ready(function() {
     $('#datatable').DataTable();
     $('#autoWidth').true();
-    
+
 } );
   </script>
 @endpush
