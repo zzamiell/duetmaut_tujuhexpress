@@ -23,9 +23,15 @@
                 Import Order
               </button>
               <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal">
-              Mass Order Update
-            </button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal">
+                Mass Order Update
+              </button>
+
+              <!-- Button filter modal -->
+              <button onclick="openFilterModal()" type="button" class="btn btn-primary" data-toggle="modal">
+                Filter
+              </button>
+              <!-- <a href="javascript:void(0)" onclick="openFilterModal()" class="btn btn-danger waves-effect waves-light"><i class="fa fa-file-pdf-o">Filter 2</i> </a> -->
             </div>
 
 
@@ -78,7 +84,7 @@
 
                   <td>{{ $order->service_type }}</td>
                   <td>{{ $order->total_fee }}</td>
-                  <td><a class="btn btn-primary" href="{{ route('orders.show',$order->id)}}">{{ $order->order_status}}</a>
+                  <td><a class="btn btn-primary" href="{{ route('orders.show',$order->awb)}}">{{ $order->order_status}}</a>
                     {{ csrf_field() }}</td>
 
 
@@ -152,14 +158,52 @@
         </div>
       </div>
 
-
+<!-- modal filter export -->
+<div class="modal fade" id="modalFilterExport" tabindex="-1" aria-labelledby="modalFilterExport" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Filter</h5>
+                <button type="button" class="close btnClose" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="" id="formExport" method="GET">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tanggal</label>
+                        <div class="input-group input-daterange">
+                            <input type="text" class="form-control" value="2012-04-05">
+                            <div class="input-group-addon">to</div>
+                            <input type="text" class="form-control" value="2012-04-19">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Max Page</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="max_page" value="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnClose" data-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary btnSubmit" value="Download">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 @push('js')
   <script>
-    $(document).ready(function() {
-    $('#datatable').DataTable();
-    $('#autoWidth').true();
+      $(document).ready(function() {
+      $('#datatable').DataTable();
+      $('#autoWidth').true();
+  } );
+  function openFilterModal(){
+      console.log("==> hello");
+      $("#modalFilterExport").modal('show');
+  }
 
-} );
   </script>
 @endpush

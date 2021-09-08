@@ -136,11 +136,11 @@
                                           </div>
 
                                           <div class="modal-body">
-                                                  <form action="{{ route('update',$orders->id)}}" method="POST">
+                                                  <form action="{{ route('update',$orders->awb)}}" method="POST">
                                                     {{ csrf_field() }}
 
                                                 <input type="hidden" name="awb" value="{{ $orders->awb }}">
-                                                <input type="hidden" name="id" value="{{ $orders->id }}">
+                                                <input type="hidden" name="id" value="{{ $orders->awb }}">
 
 
                                       <div class="row">
@@ -150,8 +150,8 @@
                                                 <select name="order_status" required="">
 
                                                   @foreach ($OrderStatus as $status )
-                                                    <option value="{{ $status['name'] }}" @if (isset($orders['order_status']) &&
-                                                      $orders['order_status']==$status['name'] )
+                                                    <option value="{{ $status['name'] }}" @if (isset($orders->order_status) &&
+                                                      $orders->order_status==$status['name'] )
                                                       selected=""@endif> {{ $status['name'] }}</option>
 
                                                   @endforeach

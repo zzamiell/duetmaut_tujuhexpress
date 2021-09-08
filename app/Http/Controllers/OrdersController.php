@@ -25,8 +25,10 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = orders::all();
-        //dd($orders);
+        // $orders = orders::all();
+        // dd($orders);
+        $orders = \DB::select("SELECT * FROM orders");
+        // dd(compact('orders', 'orders'));
 
         //dd($orderStatus);
         return view('orders.index', compact('orders', 'orders'));
@@ -111,11 +113,16 @@ class OrdersController extends Controller
      */
     public function show($awb)
     {
-        $orders = orders::find($awb);
+        // dd($awb);
+        $orders = \DB::select("SELECT * FROM orders WHERE awb=:awb",['awb'=>$awb]);
+        $orders = $orders[0];
+        //dd($orders);
         $OrderStatus = OrderStatus::select()->get()->toArray();
+        
         $OrdersLog = OrdersLog::where('awb', $awb)->get()->toArray();
+        // dd(compact('orders', 'OrderStatus', 'OrdersLog'));
 
-
+        // dd($orders->awb);
 
 
         return view('orders.show')->with(compact('orders', 'OrderStatus', 'OrdersLog'));
