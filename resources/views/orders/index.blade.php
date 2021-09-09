@@ -168,7 +168,7 @@
                                   <i class="now-ui-icons arrows-1_minimal-down"></i>
                                 </div>
                               </div>
-                              <input class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" type="text" name="tanggal_awal" value="{{ old('tanggal_awal') }}" required autofocus>
+                              <input class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_awal" value="{{ old('tanggal_awal') }}" required autofocus>
                               @if ($errors->has('tanggal_awal'))
                                 <span class="invalid-feedback" style="display: block;" role="alert">
                                   <strong>{{ $errors->first('tanggal_awal') }}</strong>
@@ -183,7 +183,7 @@
                                   <i class="now-ui-icons arrows-1_minimal-up"></i>
                                 </div>
                               </div>
-                              <input class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" type="text" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}" required autofocus>
+                              <input class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}" required autofocus>
                               @if ($errors->has('tanggal_akhir'))
                                 <span class="invalid-feedback" style="display: block;" role="alert">
                                   <strong>{{ $errors->first('tanggal_akhir') }}</strong>
