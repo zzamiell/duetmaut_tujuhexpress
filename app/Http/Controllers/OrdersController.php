@@ -53,6 +53,30 @@ class OrdersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function filter(Request $request) {
+        // $orders = \DB::select("SELECT * FROM orders");
+        // dd(compact('orders', 'orders'));
+
+        $query = "";
+
+        if($request->order_status != "all") {
+            $query = "
+            SELECT * FROM orders WHERE order_status = '".$request->order_status
+            ."' AND date_requested BETWEEN '".$request->tanggal_awal." 00:00:00' AND '"
+            .$request->tanggal_akhir." 23:59:59'";
+        } else {
+            $query = "
+            SELECT * FROM orders WHERE date_requested BETWEEN '".$request->tanggal_awal." 00:00:00' AND '"
+            .$request->tanggal_akhir." 23:59:59'";
+        }
+        
+        // dd($query);        
+        $orders = \DB::select($query);
+
+        //dd($orderStatus);
+        return view('orders.index', compact('orders', 'orders'));
+    }
+
     public function store(Request $request)
     {
         // dd($request->awb);
