@@ -109,15 +109,12 @@ class OrdersController extends Controller
      * @param  \App\orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function show($awb)
+    public function show($id, $awb)
     {
-        $orders = orders::find($awb);
+        $orders = orders::find($id);
         $OrderStatus = OrderStatus::select()->get()->toArray();
         $OrdersLog = OrdersLog::where('awb', $awb)->get()->toArray();
-
-
-
-
+        // dd($OrdersLog);
         return view('orders.show')->with(compact('orders', 'OrderStatus', 'OrdersLog'));
     }
 

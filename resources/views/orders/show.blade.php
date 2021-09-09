@@ -58,9 +58,13 @@
                                         {{ $orders->total_fee }} <br><hr>
                                         <label>{{__("Status: ")}}</label>
                                         {{ $orders->order_status }}<br><hr>
+
                                         @foreach ($OrdersLog as $log )
+                                        @php
+                                        $created_at = date("Y-m-d", strtotime($log['created_at']));
+                                        @endphp
                                         <label> {{ $log['order_status'].' : ' }}</label>
-                                        {{ date('Y-m-d H:i:s',strtotime($log['created_at'])) }} <br>
+                                        {{ tanggal_local($created_at) }} <br>
 
                                         @endforeach
                                         <!-- Button trigger modal -->

@@ -28,8 +28,6 @@ class orders extends Model
     }
 
     protected $fillable = [
-
-
         'awb',
         'date_requested',
         'ref_id',
@@ -58,7 +56,6 @@ class orders extends Model
         'cod_fee',
         'insurance_fee',
         'total_fee',
-
     ];
 
     //protected $attributes = ['order_status'=>'pending'] ;
