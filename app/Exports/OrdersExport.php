@@ -38,12 +38,12 @@ class OrdersExport implements FromCollection, WithHeadings
             'order_status',
             'is_insured',
             'is_cod',
-            'update_date',
             'delivery_fee',
             'cod_fee',
             'insurance_fee',
             'total_fee',
             'date_requested',
+            'update_date',
         )->get();
     }
 
