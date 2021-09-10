@@ -138,10 +138,10 @@ class OrdersController extends Controller
      */
     public function show($id, $awb)
     {
-        $orders = orders::find($id);
+        // $orders = orders::find($id);
         // dd($awb);
-        // $orders = \DB::select("SELECT * FROM orders WHERE awb=:awb", ['awb' => $awb]);
-        // $orders = $orders[0];
+        $orders = \DB::select("SELECT * FROM orders WHERE awb=:awb", ['awb' => $awb]);
+        $orders = $orders[0];
         //dd($orders);
         $OrderStatus = OrderStatus::select()->get()->toArray();
 
