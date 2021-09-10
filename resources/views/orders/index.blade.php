@@ -86,7 +86,7 @@
 
                   <td>{{ $order->service_type }}</td>
                   <td>{{ $order->total_fee }}</td>
-                  <td><a class="btn btn-primary" href="{{ route('orders.show',$order->awb)}}">{{ $order->order_status}}</a>
+                  <td><a class="btn btn-primary" href="/orders/show/{{$order->id}}/{{$order->awb}}">{{ $order->order_status}}</a>
                     {{ csrf_field() }}</td>
 
 

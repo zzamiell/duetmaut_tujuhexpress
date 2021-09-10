@@ -53,21 +53,22 @@ class OrdersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function filter(Request $request) {
+    public function filter(Request $request)
+    {
         // $orders = \DB::select("SELECT * FROM orders");
         // dd(compact('orders', 'orders'));
 
         $query = "";
 
-        if($request->order_status != "all") {
+        if ($request->order_status != "all") {
             $query = "
-            SELECT * FROM orders WHERE order_status = '".$request->order_status
-            ."' AND date_requested BETWEEN '".$request->tanggal_awal." 00:00:00' AND '"
-            .$request->tanggal_akhir." 23:59:59'";
+            SELECT * FROM orders WHERE order_status = '" . $request->order_status
+                . "' AND date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                . $request->tanggal_akhir . " 23:59:59'";
         } else {
             $query = "
-            SELECT * FROM orders WHERE date_requested BETWEEN '".$request->tanggal_awal." 00:00:00' AND '"
-            .$request->tanggal_akhir." 23:59:59'";
+            SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                . $request->tanggal_akhir . " 23:59:59'";
         }
 
         // dd($query);
@@ -137,13 +138,15 @@ class OrdersController extends Controller
      */
     public function show($id, $awb)
     {
+        $orders = orders::find($id);
         // dd($awb);
-        $orders = \DB::select("SELECT * FROM orders WHERE awb=:awb",['awb'=>$awb]);
-        $orders = $orders[0];
+        // $orders = \DB::select("SELECT * FROM orders WHERE awb=:awb", ['awb' => $awb]);
+        // $orders = $orders[0];
         //dd($orders);
         $OrderStatus = OrderStatus::select()->get()->toArray();
 
         $OrdersLog = OrdersLog::where('awb', $awb)->get()->toArray();
+        // dd($OrdersLog);
         // dd(compact('orders', 'OrderStatus', 'OrdersLog'));
 
         // dd($orders->awb);
