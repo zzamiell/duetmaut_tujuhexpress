@@ -25,8 +25,10 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = orders::all();
-        //dd($orders);
+        // $orders = orders::all();
+        // dd($orders);
+        $orders = \DB::select("SELECT * FROM orders");
+        // dd(compact('orders', 'orders'));
 
         //dd($orderStatus);
         return view('orders.index', compact('orders', 'orders'));
@@ -51,6 +53,30 @@ class OrdersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function filter(Request $request) {
+        // $orders = \DB::select("SELECT * FROM orders");
+        // dd(compact('orders', 'orders'));
+
+        $query = "";
+
+        if($request->order_status != "all") {
+            $query = "
+            SELECT * FROM orders WHERE order_status = '".$request->order_status
+            ."' AND date_requested BETWEEN '".$request->tanggal_awal." 00:00:00' AND '"
+            .$request->tanggal_akhir." 23:59:59'";
+        } else {
+            $query = "
+            SELECT * FROM orders WHERE date_requested BETWEEN '".$request->tanggal_awal." 00:00:00' AND '"
+            .$request->tanggal_akhir." 23:59:59'";
+        }
+
+        // dd($query);
+        $orders = \DB::select($query);
+
+        //dd($orderStatus);
+        return view('orders.index', compact('orders', 'orders'));
+    }
+
     public function store(Request $request)
     {
         // dd($request->awb);
@@ -111,10 +137,18 @@ class OrdersController extends Controller
      */
     public function show($id, $awb)
     {
-        $orders = orders::find($id);
+        // dd($awb);
+        $orders = \DB::select("SELECT * FROM orders WHERE awb=:awb",['awb'=>$awb]);
+        $orders = $orders[0];
+        //dd($orders);
         $OrderStatus = OrderStatus::select()->get()->toArray();
+
         $OrdersLog = OrdersLog::where('awb', $awb)->get()->toArray();
-        // dd($OrdersLog);
+        // dd(compact('orders', 'OrderStatus', 'OrdersLog'));
+
+        // dd($orders->awb);
+
+
         return view('orders.show')->with(compact('orders', 'OrderStatus', 'OrdersLog'));
     }
 
