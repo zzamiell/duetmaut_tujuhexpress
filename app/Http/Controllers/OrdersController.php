@@ -175,6 +175,7 @@ class OrdersController extends Controller
      */
     public function update(Request $request, orders $orders)
     {
+        dd('masuk');
         $orders->update([
             'awb' => $request->awb,
             'date_requested' => $request->date_requested,
@@ -221,6 +222,7 @@ class OrdersController extends Controller
         $data = array(
             'order_status' => $request->get('order_status')
         );
+
         $update = DB::table('orders')
             ->where('id', $request->get('id'))
             ->update($data);
@@ -237,9 +239,10 @@ class OrdersController extends Controller
             );
 
             $log = DB::table('orders_logs')->insert($data);
-            return Redirect()->route('orders.update', $id)->with('success', 'Order has been edited!');
+
+            return Redirect()->back()->with('success', 'Order has been edited!');
         } else {
-            return Redirect()->route('orders.update', $id)->with('success', 'Order has been edited!');
+            return Redirect()->back()->with('success', 'Order has been edited!');
         }
     }
 

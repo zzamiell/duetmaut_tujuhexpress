@@ -61,10 +61,10 @@
 
                                         @foreach ($OrdersLog as $log )
                                         @php
-                                        $created_at = date("Y-m-d", strtotime($log['created_at']));
+                                        $created_at = date("Y-m-d H:i:s", strtotime($log['created_at']));
                                         @endphp
                                         <label> {{ $log['order_status'].' : ' }}</label>
-                                        {{ tanggal_local($created_at) }} <br>
+                                        {{ $created_at }} <br>
 
                                         @endforeach
                                         <!-- Button trigger modal -->
@@ -140,11 +140,11 @@
                                           </div>
 
                                           <div class="modal-body">
-                                                  <form action="{{ route('update',$orders->awb)}}" method="POST">
+                                                  <form action="{{ route('update',$orders->id)}}" method="POST">
                                                     {{ csrf_field() }}
 
                                                 <input type="hidden" name="awb" value="{{ $orders->awb }}">
-                                                <input type="hidden" name="id" value="{{ $orders->awb }}">
+                                                <input type="hidden" name="id" value="{{ $orders->id }}">
 
 
                                       <div class="row">
