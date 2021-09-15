@@ -34,7 +34,11 @@ class OrdersController extends Controller
                 ->paginate(10);
             return view('orders.index', compact('orders', 'orders'));
         } else {
-            $orders = DB::table('orders')->paginate(10);
+            // $orders = DB::table('orders')->paginate(10);
+            $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
+            $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
             return view('orders.index', compact('orders', 'orders'));
         }
     }

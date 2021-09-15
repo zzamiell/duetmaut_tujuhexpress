@@ -14,7 +14,7 @@
           <div class="card-header">
             <h4 class="card-title"> Order List </h4>
 
-
+            {{-- {{ dd(date('Y-m-d', strtotime('+3 month'))) }} --}}
 
             <div> <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
 
@@ -35,11 +35,6 @@
               </div>
               <!-- <a href="javascript:void(0)" onclick="openFilterModal()" class="btn btn-danger waves-effect waves-light"><i class="fa fa-file-pdf-o">Filter 2</i> </a> -->
             </div>
-
-
-
-
-
 
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
@@ -191,7 +186,7 @@
                                   <i class="now-ui-icons arrows-1_minimal-down"></i>
                                 </div>
                               </div>
-                              <input class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_awal" value="{{ old('tanggal_awal') }}" required autofocus>
+                              <input class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" min="{{date('Y-m-d', strtotime('-3 month'))}}" max="{{date('Y-m-d', strtotime('+3 month'))}}" placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_awal" value="{{ old('tanggal_awal') }}" required autofocus>
                               @if ($errors->has('tanggal_awal'))
                                 <span class="invalid-feedback" style="display: block;" role="alert">
                                   <strong>{{ $errors->first('tanggal_awal') }}</strong>
@@ -206,7 +201,7 @@
                                   <i class="now-ui-icons arrows-1_minimal-up"></i>
                                 </div>
                               </div>
-                              <input class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}" required autofocus>
+                              <input class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" min="{{date('Y-m-d', strtotime('-3 month'))}}" max="{{date('Y-m-d', strtotime('+3 month'))}}" placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}" required autofocus>
                               @if ($errors->has('tanggal_akhir'))
                                 <span class="invalid-feedback" style="display: block;" role="alert">
                                   <strong>{{ $errors->first('tanggal_akhir') }}</strong>
