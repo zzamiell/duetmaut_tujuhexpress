@@ -18,7 +18,7 @@
           <p>{{ __('Dashboard') }}</p>
         </a>
       </li>-->
-      
+
 
       <li class = "@if ($activePage == 'Orders') active @endif">
         <a href="{{ route('orders.index') }}">
@@ -41,6 +41,7 @@
         </a>
       </li>
 
+      {{-- {{ dd($activePage) }} --}}
       <!--<li>
         <a data-toggle="collapse" href="#laravelExamples">
             <i class="fab fa-laravel"></i>
@@ -57,7 +58,7 @@
                 <p> {{ __("User Profile") }} </p>
               </a>
             </li>
-            
+
             </li>
           </ul>
         </div>
@@ -91,7 +92,7 @@
           <p>{{ __('Typography') }}</p>
         </a>
       </li>-->
-     
+
     </ul>
   </div>
 </div>

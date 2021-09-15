@@ -70,4 +70,10 @@ Route::group(['middleware' => 'auth'], function () {
         return view('home');
     });
     Route::get('clients/index', 'ClientsController@index')->name('clients.index');
+    Route::get('clients/index/{id}', 'ClientsController@show')->name('client_show');
+    Route::post('insert_client', 'ClientsController@insert_client')->name('insert_client');
+    Route::post('update_client/{id}', 'ClientsController@update_client')->name('update_client');
+    Route::post('hapus_clients/{id}', 'ClientsController@hapus_clients')->name('hapus_clients');
+
+    Route::get('pricing/index', 'PricingController@index')->name('pricing/index');
 });

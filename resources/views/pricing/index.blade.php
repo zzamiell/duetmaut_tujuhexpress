@@ -1,7 +1,7 @@
 @extends('layouts.app', [
-    'namePage' => 'clients',
+    'namePage' => 'pricing',
     'class' => 'sidebar-mini',
-    'activePage' => 'clients',
+    'activePage' => 'pricing',
   ])
 
 @section('content')
@@ -15,7 +15,7 @@
           <div class="card-header">
             {{-- <h4 class="card-title"> Clients List </h4> --}}
             <div class="card-body">
-                <h3 class="float-left mt-3">Clients List</h3>
+                <h3 class="float-left mt-3">Pricing List</h3>
                 <a href="" type="button"
                     class="btn btn-dark waves-effect waves-light mt-3 float-right text-white"
                     style="background-color: #39BEAA; color: black; text-decoration: none;" data-toggle="modal" data-target="#exampleModal">Add new clients</a>
@@ -25,43 +25,41 @@
                     <table class="table">
                       <thead class=" text-primary">
                        <th>No</th>
-                       <th>acc name</th>
-                       <th>catgory</th>
-                       <th>pic name</th>
-                       <th>pic number</th>
-                       <th>sales agent</th>
-                       <th>cod fee</th>
-                       <th>insurance fee</th>
-                       <th>created at</th>
-                       <th>action</th>
+                       <th>province</th>
+                       <th>area</th>
+                       <th>district</th>
+                       <th>subdistrict id</th>
+                       <th>subdistrict</th>
+                       <th>zip code</th>
+                       <th>servcie order</th>
+                       <th>service type</th>
+                       <th>delivery fee</th>
                       </thead>
                       <tbody>
-                          @foreach ($clients as $key => $item)
-                          @php
-                          $created_at = date("Y-m-d", strtotime($item['created_at']));
-                          @endphp
+                          @foreach ($pricing as $key => $item)
                           <tr>
-                              <td style="vertical-align: middle;">{{ $key+1 }}</td>
-                              <td style="vertical-align: middle;">{{ $item['account_name'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['reff_client_category']['client_category'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['pic_name'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['pic_number'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['sales_agent'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['cod_fee'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['insurance_fee'] }}</td>
-                              <td style="vertical-align: middle;">{{ tanggal_local($created_at) }}</td>
+                              <td style="vertical-align: middle;">{{ $key=1 }}</td>
+                              <td style="vertical-align: middle;">{{ $item->province }}</td>
+                              <td style="vertical-align: middle;">{{ $item->area }}</td>
+                              <td style="vertical-align: middle;">{{ $item->district }}</td>
+                              <td style="vertical-align: middle;">{{ $item->subdistrict_id }}</td>
+                              <td style="vertical-align: middle;">{{ $item->subdistrict }}</td>
+                              <td style="vertical-align: middle;">{{ $item->zip_code }}</td>
+                              <td style="vertical-align: middle;">{{ $item->service_order }}</td>
+                              <td style="vertical-align: middle;">{{ $item->service_type }}</td>
+                              <td style="vertical-align: middle;">{{ $item->price }}</td>
                               <td style="vertical-align: middle;">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="{{ route('client_show', $item['id']) }}" type="button" class="btn"><i
-                                    class="now-ui-icons ui-1_zoom-bold"></i></a>
-                                <button type="button" class="btn btn-danger"  onclick=deletedata(<?= $item['id'] ?>)><i
+                                <button type="button" class="btn" data-toggle="modal" data-target="#edit{{ $item->id }}"><i
+                                    class="now-ui-icons ui-1_zoom-bold"></i></button>
+                                <button type="button" class="btn btn-danger"  onclick=deletedata(<?= $item->id ?>)><i
                                     class="now-ui-icons ui-1_simple-remove"></i></button>
                                 </div>
                             </td>
                           </tr>
 
                             <!-- Modal isi tambah banner -->
-                            <div class="modal fade" id="edit{{ $item['id'] }}" tabindex="-1" role="dialog"
+                            <div class="modal fade" id="edit{{ $item->id }}" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg" role="document">
                                     <div class="modal-content">
@@ -80,46 +78,50 @@
                                             </div>
                                             <div class="modal-body">
                                                 {{-- isi --}}
-                                                {{-- <div class="form-group">
-                                                    <label>Account Name</label>
-                                                    <input type="text" name="acc_name" class="form-control" value="{{ $item->account_name }}" required />
-                                                </div>
-
-                                               <div class="form-group">
-                                                    <label>Clients Category</label>
-                                                    <select name="clients_category" class="form-control" id="">
-                                                    <optgroup label="Pilih scope">
-                                                        @foreach ($category as $kt)
-                                                        <option value="{{$kt->id}}">{{$kt->client_category}}</option>
-                                                        @endforeach
-                                                    </optgroup>
-                                                    </select>
+                                                <div class="form-group">
+                                                    <label>Province</label>
+                                                    <input type="text" name="province" value="{{ $item->province }}" class="form-control" required />
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Pic Name</label>
-                                                    <input type="text" name="pic_name" class="form-control" value="{{ $item->pic_name }}" required />
+                                                    <label>Area</label>
+                                                    <input type="text" name="area" class="form-control" value="{{ $item->area }}" required />
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Pic Number</label>
-                                                    <input type="text" name="pic_number" class="form-control" value="{{ $item->pic_number }}" required />
+                                                    <label>District</label>
+                                                    <input type="text" name="district" class="form-control" value="{{ $item->district }}" required />
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Sales Agent</label>
-                                                    <input type="text" name="sales_agent" class="form-control" value="{{ $item->sales_agent }}" required />
+                                                    <label>Subdistrict Id</label>
+                                                    <input type="text" name="subdistrict_id" class="form-control" value="{{ $item->subdistrict_id }}" required />
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Cod Fee</label>
-                                                    <input type="text" name="cod_fee" class="form-control" value="{{ $item->cod_fee }}" required />
+                                                    <label>Subdistrict</label>
+                                                    <input type="text" name="subdistrict" class="form-control" value="{{ $item->subdistrict }}" required />
                                                 </div>
 
                                                 <div class="form-group">
-                                                    <label>Insurance Fee</label>
-                                                    <input type="text" name="insurance_fee" class="form-control" value="{{ $item->insurance_fee }}" required />
-                                                </div> --}}
+                                                    <label>Zip code</label>
+                                                    <input type="text" name="zipcode" class="form-control" value="{{ $item->zip_code }}" required />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Service order</label>
+                                                    <input type="text" name="service_order" class="form-control" value="{{ $item->service_order }}"  required />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Service type</label>
+                                                    <input type="text" name="service_type" class="form-control" value="{{ $item->service_type }}" required />
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>Delivery fee</label>
+                                                    <input type="text" name="delivery_fee" class="form-control" value="{{ $item->price }}" required />
+                                                </div>
                                                 {{-- end isi --}}
                                             </div>
                                             <div class="modal-footer">
@@ -130,7 +132,6 @@
                                     </div>
                                 </div>
                             </div>
-
                           @endforeach
                       </tbody>
                     </table>
@@ -145,11 +146,11 @@
 aria-hidden="true">
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-        <form action="{{ route('insert_client') }}" method="POST" id="form-program" class="form-class" name="form-name"
+        <form action="" method="POST" id="form-program" class="form-class" name="form-name"
             enctype="multipart/form-data">
             @csrf
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New client</h5>
+                <h5 class="modal-title" id="exampleModalLabel">New pricing</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -157,44 +158,48 @@ aria-hidden="true">
             <div class="modal-body">
                 {{-- isi --}}
                 <div class="form-group">
-                    <label>Account Name</label>
-                    <input type="text" name="acc_name" class="form-control" required />
-                </div>
-
-               <div class="form-group">
-                    <label>Clients Category</label>
-                    <select name="clients_category" class="form-control" id="">
-                    <optgroup label="Pilih scope">
-                        @foreach ($category as $kt)
-                        <option value="{{$kt->id}}">{{$kt->client_category}}</option>
-                        @endforeach
-                    </optgroup>
-                    </select>
+                    <label>Province</label>
+                    <input type="text" name="province" class="form-control" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Pic Name</label>
-                    <input type="text" name="pic_name" class="form-control" required />
+                    <label>Area</label>
+                    <input type="text" name="area" class="form-control" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Pic Number</label>
-                    <input type="text" name="pic_number" class="form-control" required />
+                    <label>District</label>
+                    <input type="text" name="district" class="form-control" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Sales Agent</label>
-                    <input type="text" name="sales_agent" class="form-control" required />
+                    <label>Subdistrict Id</label>
+                    <input type="text" name="subdistrict_id" class="form-control" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Cod Fee</label>
-                    <input type="text" name="cod_fee" class="form-control" required />
+                    <label>Subdistrict</label>
+                    <input type="text" name="subdistrict" class="form-control" required />
                 </div>
 
                 <div class="form-group">
-                    <label>Insurance Fee</label>
-                    <input type="text" name="insurance_fee" class="form-control" required />
+                    <label>Zip code</label>
+                    <input type="text" name="zipcode" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Service order</label>
+                    <input type="text" name="service_order" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Service type</label>
+                    <input type="text" name="service_type" class="form-control" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery fee</label>
+                    <input type="text" name="delivery_fee" class="form-control" required />
                 </div>
 
                 {{-- end isi --}}
@@ -207,15 +212,7 @@ aria-hidden="true">
 </div>
 </div>
 
-
 <script src="{{ asset('sweetalert/sweetalert.min.js') }}"></script>
-
-@if(Session::has('data'))
-<script type="text/javascript">
-  swal("", "Berhasil tambah data client", "success");
-</script>
-@endif
-
 <script type="text/javascript">
         function deletedata(id) {
         event.preventDefault();

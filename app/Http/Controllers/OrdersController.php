@@ -26,11 +26,9 @@ class OrdersController extends Controller
     public function index()
     {
         // $orders = orders::all();
-        // dd($orders);
-        $orders = \DB::select("SELECT * FROM orders");
-        // dd(compact('orders', 'orders'));
+        // $orders = \DB::select("SELECT * FROM orders");
+        $orders = DB::table('orders')->paginate(10);
 
-        //dd($orderStatus);
         return view('orders.index', compact('orders', 'orders'));
     }
 

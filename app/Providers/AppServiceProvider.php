@@ -24,5 +24,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        config([
+            'client_be' => $this->client = new \GuzzleHttp\Client(
+                ['base_uri' => env('IP_BE')]
+            )
+        ]);
     }
 }
