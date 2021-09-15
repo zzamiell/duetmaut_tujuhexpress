@@ -48,8 +48,28 @@
 
         @endif
         <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="text-center pagination">
+                        {{$orders->links("pagination::bootstrap-4")}}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <form action="/orders/index" method="get">
+                        {{ csrf_field() }}
+                        {{-- <input name="search" class="form-control mb-2" placeholder="Cari perusahaan" type="text" /><input type="submit"> --}}
+                        <div class="input-group mb-3">
+                            <input type="text" name="cari" class="form-control" placeholder="TX-210914000001">
+                            <div class="input-group-append">
+                              <input type="submit" class="input-group-text" id="basic-addon2" value="Cari Orders">
+                            </div>
+                          </div>
+                    </div>
+                </form>
+            </div>
+            <hr>
           <div class="table-responsive">
-            <table id="datatable" class="table">
+            <table id="" class="table">
               <thead class=" text-primary">
                 <th>
                   Date Request
@@ -96,7 +116,10 @@
 
               </tbody>
             </table>
-
+            <hr>
+            <div class="text-center">
+                {{$orders->links("pagination::bootstrap-4")}}
+            </div>
             </div>
                 <!-- Modal -->
                 <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">

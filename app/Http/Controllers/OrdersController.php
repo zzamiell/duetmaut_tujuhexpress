@@ -23,13 +23,20 @@ class OrdersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // $orders = orders::all();
         // $orders = \DB::select("SELECT * FROM orders");
-        $orders = DB::table('orders')->paginate(10);
-
-        return view('orders.index', compact('orders', 'orders'));
+        if ($request->get('cari')) {
+            $query = $request->get('cari');
+            $orders = DB::table('orders')
+                ->where('awb', 'LIKE', '%' . $query . '%')
+                ->paginate(10);
+            return view('orders.index', compact('orders', 'orders'));
+        } else {
+            $orders = DB::table('orders')->paginate(10);
+            return view('orders.index', compact('orders', 'orders'));
+        }
     }
 
     /**
