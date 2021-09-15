@@ -29,19 +29,24 @@ class ClientsController extends Controller
 
     public function show($id)
     {
-        // $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=1&max_page=10&sort_by=id&sort_method=DESC', [
-        //     'headers' => [
-        //         'Accept' => 'application/json'
-        //     ],
-        //     'exceptions' => false,
-        // ]);
-        // $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data']['rows'];
+
         $clients =  DB::table('tb_clients')->where('id', $id)->first();
-        // dd($clients);
         $category = DB::table('reff_client_category')->get();
-        $area = DB::table('reff_area')->take(20)->get();
-        // dd($area);
-        return view('clients.show', compact('clients', 'category', 'area'));
+        $service = DB::table('reff_service_order')->get();
+        $area = DB::table('reff_area')->paginate(10);
+
+
+        $data_pricing = config('client_be')->request('GET', '/api/v1/tb-pricing?page=1&max_page=10&sort_by=id&sort_method=DESC&id_client=' . $id, [
+            'headers' => [
+                // 'Authorization' => 'Bearer ' . Session::get('token'),
+                'Accept' => 'application/json'
+            ],
+            'exceptions' => false,
+        ]);
+        $pricing = json_decode($data_pricing->getBody()->getContents(), TRUE)['data']['rows'];
+
+        // dd($pricing);
+        return view('clients.show', compact('clients', 'category', 'area', 'service', 'pricing'));
     }
 
     public function insert_client(Request $request)
@@ -68,6 +73,35 @@ class ClientsController extends Controller
 
             if ($create) {
                 return redirect()->back()->with('data', 'Berhasil menambah client');
+            } else {
+                return redirect()->back()->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+            }
+        } catch (\Exception $e) {
+            dd($e);
+        }
+    }
+
+    public function insert_pricing(Request $request)
+    {
+        try {
+            // dd($request->all());
+            $data = array(
+                'id_client' => (int)$request->get('id_client'),
+                'id_service_order' => (int)$request->get('service_order'),
+                'id_area' => (int)$request->get('id_area'),
+                'pricing' => (int)$request->get('price'),
+            );
+            // dd($data);
+            $create = config('client_be')->request('POST', '/api/v1/tb-pricing', [
+                'headers' => [
+                    'Accept' => 'application/json'
+                ],
+                'exceptions' => false,
+                'json' => $data
+            ]);
+
+            if ($create) {
+                return redirect()->back()->with('price', 'Berhasil menambah pricing');
             } else {
                 return redirect()->back()->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
             }
