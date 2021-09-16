@@ -49,6 +49,28 @@ class ClientsController extends Controller
         return view('clients.show', compact('clients', 'category', 'area', 'service', 'pricing'));
     }
 
+    public function add_pricing($id)
+    {
+        // dd($id);
+        $clients =  DB::table('tb_clients')->where('id', $id)->first();
+        $category = DB::table('reff_client_category')->get();
+        $service = DB::table('reff_service_order')->get();
+        $area = DB::table('reff_area')->paginate(10);
+
+
+        $data_pricing = config('client_be')->request('GET', '/api/v1/tb-pricing?page=1&max_page=10&sort_by=id&sort_method=DESC&id_client=' . $id, [
+            'headers' => [
+                // 'Authorization' => 'Bearer ' . Session::get('token'),
+                'Accept' => 'application/json'
+            ],
+            'exceptions' => false,
+        ]);
+        $pricing = json_decode($data_pricing->getBody()->getContents(), TRUE)['data']['rows'];
+
+        // dd($pricing);
+        return view('clients.add_pricing', compact('clients', 'category', 'area', 'service', 'pricing'));
+    }
+
     public function insert_client(Request $request)
     {
         try {
@@ -84,7 +106,6 @@ class ClientsController extends Controller
     public function insert_pricing(Request $request)
     {
         try {
-            // dd($request->all());
             $data = array(
                 'id_client' => (int)$request->get('id_client'),
                 'id_service_order' => (int)$request->get('service_order'),
@@ -101,9 +122,9 @@ class ClientsController extends Controller
             ]);
 
             if ($create) {
-                return redirect()->back()->with('price', 'Berhasil menambah pricing');
+                return redirect()->to('clients/index/' . $request->get('id_client'))->with('price', 'Berhasil menambah pricing');
             } else {
-                return redirect()->back()->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+                return redirect()->to('clients/index/' . $request->get('id_client'))->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
             }
         } catch (\Exception $e) {
             dd($e);

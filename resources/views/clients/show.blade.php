@@ -92,8 +92,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <button type="button" data-toggle="modal" data-target="#pricing{{ $clients->id }}" style="float: right"
-                    class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</button>
+                {{-- <button type="button" data-toggle="modal" data-target="#pricing{{ $clients->id }}" style="float: right"
+                    class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</button> --}}
+                <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
                 <div class="card-header">
                     <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
                 </div>
