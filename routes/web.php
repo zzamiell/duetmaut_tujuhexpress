@@ -77,6 +77,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('hapus_clients/{id}', 'ClientsController@hapus_clients')->name('hapus_clients');
 
     Route::get('pricing/index', 'PricingController@index')->name('pricing/index');
-    Route::get('add_pricing/{id}', 'CLientsController@add_pricing')->name('add_pricing');
+    Route::get('add_pricing/{id}', 'ClientsController@add_pricing')->name('add_pricing');
     Route::post('insert_pricing', 'ClientsController@insert_pricing')->name('insert_pricing');
 });
