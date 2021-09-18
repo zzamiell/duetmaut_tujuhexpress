@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('orders/show/{awb}', 'OrdersController@update')->name('orders.update');
     Route::post('orders/update/{id}', 'OrdersController@update_order')->name('update');
     //--------------------Filter------------------------
-    Route::post('orders/filter', 'OrdersController@filter')->name('orders.filter');
+    Route::get('orders/filter', 'OrdersController@filter')->name('orders.filter');
 });
 
 Route::group(['middleware' => 'auth'], function () {

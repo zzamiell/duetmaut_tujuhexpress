@@ -14,6 +14,7 @@ class ClientsController extends Controller
     public function index()
     {
         // $clients =  DB::table('tb_clients')->paginate(10);
+        // dd(config());
         $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=1&max_page=10&sort_by=id&sort_method=DESC', [
             'headers' => [
                 // 'Authorization' => 'Bearer ' . Session::get('token'),

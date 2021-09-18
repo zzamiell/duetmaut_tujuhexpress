@@ -27,6 +27,10 @@ class OrdersController extends Controller
     {
         // $orders = orders::all();
         // $orders = \DB::select("SELECT * FROM orders");
+        // dd($request->all());
+        $tanggal_awal = date('Y-m-d', strtotime('-3 months'));
+        $tanggal_akhir = date('Y-m-d');
+
         if ($request->get('cari')) {
             $query = $request->get('cari');
             $orders = DB::table('orders')
@@ -39,8 +43,67 @@ class OrdersController extends Controller
             $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
                 ->orderBy('id', 'DESC')
                 ->paginate(10);
-            return view('orders.index', compact('orders', 'orders'));
+
+            $data = compact('orders', 'orders');
+            $data['tanggal_awal'] = $tanggal_awal;
+            $data['tanggal_akhir'] = $tanggal_akhir;
+            // dd($data);
+            return view('orders.index', $data);
         }
+    }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function filter(Request $request)
+    {
+        // dd($request->tanggal_awal);
+
+        $tanggal_awal = $request->tanggal_awal !== null ? $request->tanggal_awal : date('Y-m-d', strtotime('-3 months'));
+        $tanggal_akhir = $request->tanggal_akhir !== null ? $request->tanggal_akhir : date('Y-m-d');
+
+        // dd($tanggal_akhir);
+
+        if($tanggal_awal !== null && $tanggal_akhir !== null) {
+            if ($request->order_status != "all") {
+                // dd($request->tanggal_awal);
+                $orders = DB::table('orders')
+                    ->where([
+                        'order_status' => $request->order_status
+                    ])
+                    ->whereBetween('date_requested', [$tanggal_awal." 00:00:00", $tanggal_akhir." 23:59:59"])
+                    ->paginate(10);
+                // $query = "
+                // SELECT * FROM orders WHERE order_status = '" . $request->order_status
+                //     . "' AND date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                //     . $request->tanggal_akhir . " 23:59:59'";
+            } else {
+                // dd($request->tanggal_akhir);
+                // $query = "
+                // SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                //     . $request->tanggal_akhir . " 23:59:59'";
+                $orders = DB::table('orders')
+                    ->whereBetween('date_requested', [$tanggal_awal." 00:00:00", $tanggal_akhir." 23:59:59"])
+                    ->paginate(10);
+            };
+        } else {
+            // $orders = DB::table('orders')->paginate(10);
+            $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
+            $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+
+            // dd($orders);
+        }
+        $data = compact('orders', 'orders');
+        $data['tanggal_awal'] = $tanggal_awal;
+        $data['tanggal_akhir'] = $tanggal_akhir;
+        
+        
+        return view('orders.index', $data);
     }
 
     /**
@@ -56,36 +119,7 @@ class OrdersController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function filter(Request $request)
-    {
-        // $orders = \DB::select("SELECT * FROM orders");
-        // dd(compact('orders', 'orders'));
-
-        $query = "";
-
-        if ($request->order_status != "all") {
-            $query = "
-            SELECT * FROM orders WHERE order_status = '" . $request->order_status
-                . "' AND date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
-                . $request->tanggal_akhir . " 23:59:59'";
-        } else {
-            $query = "
-            SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
-                . $request->tanggal_akhir . " 23:59:59'";
-        }
-
-        // dd($query);
-        $orders = \DB::select($query);
-
-        //dd($orderStatus);
-        return view('orders.index', compact('orders', 'orders'));
-    }
+   
 
     public function store(Request $request)
     {

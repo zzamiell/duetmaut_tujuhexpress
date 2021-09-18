@@ -49,7 +49,7 @@
                               <td style="vertical-align: middle;">{{ $item['sales_agent'] }}</td>
                               <td style="vertical-align: middle;">{{ $item['cod_fee'] }}</td>
                               <td style="vertical-align: middle;">{{ $item['insurance_fee'] }}</td>
-                              <td style="vertical-align: middle;">{{ tanggal_local($created_at) }}</td>
+                              <td style="vertical-align: middle;">{{ $item['created_at'] }}</td>
                               <td style="vertical-align: middle;">
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                 <a href="{{ route('client_show', $item['id']) }}" type="button" class="btn"><i
@@ -217,6 +217,9 @@ aria-hidden="true">
 @endif
 
 <script type="text/javascript">
+        function tanggal_local(tanggal) {
+            return tanggal;
+        }
         function deletedata(id) {
         event.preventDefault();
         swal({

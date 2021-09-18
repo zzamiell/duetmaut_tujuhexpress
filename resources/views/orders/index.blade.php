@@ -16,7 +16,8 @@
 
             {{-- {{ dd(date('Y-m-d', strtotime('+3 month'))) }} --}}
 
-            <div> <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
+            <div> 
+              <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
 
               <!-- Button trigger modal -->
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
@@ -28,13 +29,93 @@
               </button>
 
                <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">
+              <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">
                 Filter
-              </button>
-              <div> <a class="btn btn-success" href="{{ route('orders.export')}}">Export</a>
+              </button> -->
+              <div>
+                <a class="btn btn-success" href="{{ route('orders.export')}}">Export</a>
               </div>
+              
               <!-- <a href="javascript:void(0)" onclick="openFilterModal()" class="btn btn-danger waves-effect waves-light"><i class="fa fa-file-pdf-o">Filter 2</i> </a> -->
-            </div>
+              
+              <!-- Filter Section --> 
+              <form action="{{ route('orders.filter') }}" method="GET" enctype="multipart/form-data">
+                <div class="row">
+                      <div class="col-md-6">
+                        {{ csrf_field() }}
+                        <!--Begin input tanggal pembuatan awal -->
+                        <div class="input-group {{ $errors->has('tanggal_awal') ? ' has-danger' : '' }}">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <i class="now-ui-icons arrows-1_minimal-down"></i>
+                            </div>
+                          </div>
+                          <input 
+                            class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" 
+                            min="{{date('Y-m-d', strtotime('-3 month'))}}" 
+                            max="{{date('Y-m-d', strtotime('+3 month'))}}" 
+                            placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" 
+                            type="date" name="tanggal_awal" 
+                            value="{{ $tanggal_awal ?? '' }}" 
+                            id="tanggal_awal" autofocus>
+                          @if ($errors->has('tanggal_awal'))
+                            <span class="invalid-feedback" style="display: block;" role="alert">
+                              <strong>{{ $errors->first('tanggal_awal') }}</strong>
+                            </span>
+                          @endif
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <!--Begin input tanggal pembuatan akhir -->
+                        <div class="input-group {{ $errors->has('tanggal_akhir') ? ' has-danger' : '' }}">
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">
+                              <i class="now-ui-icons arrows-1_minimal-up"></i>
+                            </div>
+                          </div>
+                          <input 
+                            class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" 
+                            min="{{date('Y-m-d', strtotime('-3 month'))}}" 
+                            max="{{date('Y-m-d', strtotime('+3 month'))}}" 
+                            placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" 
+                            type="date" name="tanggal_akhir" 
+                            value="{{ $tanggal_akhir ?? '' }}" 
+                            id="tanggal_akhir" autofocus>
+                          @if ($errors->has('tanggal_akhir'))
+                            <span class="invalid-feedback" style="display: block;" role="alert">
+                              <strong>{{ $errors->first('tanggal_akhir') }}</strong>
+                            </span>
+                          @endif
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="orderStatusSelection">Order Status</label>
+                          <select name="order_status" class="form-control" id="orderStatusSelection">
+                            <option value="all">All</option>
+                            <option value="info_received">Info Received</option>
+                            <option value="pending">Pending</option>
+                            <option value="in_transit">In Transit</option>
+                            <option value="completed">Completed</option>
+                            <option value="fail_shipper">Fail Shipper</option>
+                            <option value="fail_courier">Fail Courier</option>
+                            <option value="fail_recipient">Fail Recipient</option>
+                            <option value="fail_attempt_1">Faile Attempt</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="col-md-12">
+                        <input type="submit" value="check" class="btn btn-primary"/>
+                      </div>
+                    </div>
+
+                </form>
+
+              <!-- /Filter Section --> 
+          <div>
 
         @if ($message = Session::get('success'))
             <div class="alert alert-success">
@@ -103,8 +184,6 @@
                   <td>{{ $order->total_fee }}</td>
                   <td><a class="btn btn-primary" href="/orders/show/{{$order->id}}/{{$order->awb}}">{{ $order->order_status}}</a>
                     {{ csrf_field() }}</td>
-
-
 
                 </tr>
                 @endforeach
@@ -176,7 +255,7 @@
                         </button>
                       </div>
 
-                      <div class="modal-body">
+                      <!-- <div class="modal-body">
                         <form action="{{ route('orders.filter') }}" method="POST" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <!--Begin input tanggal pembuatan awal -->
@@ -228,7 +307,7 @@
 
                         </form>
 
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -247,23 +326,38 @@
 
 @endsection
 @push('js')
-  <script>
+  <script type="text/javascript">
       $(document).ready(function() {
-      $('#datatable').DataTable();
-      $('#autoWidth').true();
-  } );
-  function openFilterModal(){
-      console.log("==> hello");
-      $("#filterModalLabel").modal('show');
-  }
+          $('#datatable').DataTable();
+          $('#autoWidth').true();
 
-  $(document).ready(function(){
-            setDatePicker()
-            setDateRangePicker(".startdate", ".enddate")
-            setMonthPicker()
-            setYearPicker()
-            setYearRangePicker(".startyear", ".endyear")
-  })
+          // set value before loading 
+          // tanggal awal
+          $('#tanggal_awal').value(date('Y-m-d', strtotime('-3 month')));
+          $('#tanggal_akhir').value(date('Y-m-d'));
+          console.log( "ready ON LOAD !" );
+      });
+      function openFilterModal(){
+          console.log("==> hello");
+          $("#filterModalLabel").modal('show');
+      }
+
+      document.onreadystatechange = function () {
+          
+          if (document.readyState == "interactive") {
+              // Initialize your application or run some code.
+              console.log( "ready ON LOAD vanilla js!" );
+              document.getElementById('tanggal_awal').value(date('Y-m-d', strtotime('-3 month')));
+          }
+      }
+
+  // $(document).ready(function(){
+  //           setDatePicker()
+  //           setDateRangePicker(".startdate", ".enddate")
+  //           setMonthPicker()
+  //           setYearPicker()
+  //           setYearRangePicker(".startyear", ".endyear")
+  // })
 
   </script>
 @endpush
