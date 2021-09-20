@@ -35,14 +35,14 @@ class OrdersController extends Controller
             $query = $request->get('cari');
             $orders = DB::table('orders')
                 ->where('awb', 'LIKE', '%' . $query . '%')
-                ->paginate(10);
+                ->paginate(50);
             return view('orders.index', compact('orders', 'orders'));
         } else {
             // $orders = DB::table('orders')->paginate(10);
             $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
             $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
                 ->orderBy('id', 'DESC')
-                ->paginate(10);
+                ->paginate(50);
 
             $data = compact('orders', 'orders');
             $data['tanggal_awal'] = $tanggal_awal;
@@ -52,7 +52,7 @@ class OrdersController extends Controller
         }
     }
 
-     /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -67,14 +67,14 @@ class OrdersController extends Controller
 
         // dd($tanggal_akhir);
 
-        if($tanggal_awal !== null && $tanggal_akhir !== null) {
+        if ($tanggal_awal !== null && $tanggal_akhir !== null) {
             if ($request->order_status != "all") {
                 // dd($request->tanggal_awal);
                 $orders = DB::table('orders')
                     ->where([
                         'order_status' => $request->order_status
                     ])
-                    ->whereBetween('date_requested', [$tanggal_awal." 00:00:00", $tanggal_akhir." 23:59:59"])
+                    ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
                     ->paginate(10);
                 // $query = "
                 // SELECT * FROM orders WHERE order_status = '" . $request->order_status
@@ -86,7 +86,7 @@ class OrdersController extends Controller
                 // SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
                 //     . $request->tanggal_akhir . " 23:59:59'";
                 $orders = DB::table('orders')
-                    ->whereBetween('date_requested', [$tanggal_awal." 00:00:00", $tanggal_akhir." 23:59:59"])
+                    ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
                     ->paginate(10);
             };
         } else {
@@ -101,8 +101,8 @@ class OrdersController extends Controller
         $data = compact('orders', 'orders');
         $data['tanggal_awal'] = $tanggal_awal;
         $data['tanggal_akhir'] = $tanggal_akhir;
-        
-        
+
+
         return view('orders.index', $data);
     }
 
@@ -119,7 +119,7 @@ class OrdersController extends Controller
     }
 
 
-   
+
 
     public function store(Request $request)
     {
@@ -301,9 +301,9 @@ class OrdersController extends Controller
     }
 
     //export
-    public function export()
+    public function export($page)
     {
-
+        ini_set('memory_limit', '-1');
         return Excel::download(new OrdersExport, 'orders.xlsx');
         return Redirect()->route('orders.index')->with('success', 'Order has been downloaded!');
     }

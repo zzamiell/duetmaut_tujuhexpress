@@ -14,9 +14,7 @@
           <div class="card-header">
             <h4 class="card-title"> Order List </h4>
 
-            {{-- {{ dd(date('Y-m-d', strtotime('+3 month'))) }} --}}
-
-            <div> 
+            <div class="card">
               <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
 
               <!-- Button trigger modal -->
@@ -27,18 +25,18 @@
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal">
                 Mass Order Update
               </button>
+                  {{-- <div> --}}
+                <a class="btn btn-success" href="{{ route('orders.export', $orders->currentPage())}}">Export</a>
+              {{-- </div> --}}
 
                <!-- Button trigger modal -->
               <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">
                 Filter
               </button> -->
-              <div>
-                <a class="btn btn-success" href="{{ route('orders.export')}}">Export</a>
-              </div>
-              
+
               <!-- <a href="javascript:void(0)" onclick="openFilterModal()" class="btn btn-danger waves-effect waves-light"><i class="fa fa-file-pdf-o">Filter 2</i> </a> -->
-              
-              <!-- Filter Section --> 
+              <div class="card-body">
+              <!-- Filter Section -->
               <form action="{{ route('orders.filter') }}" method="GET" enctype="multipart/form-data">
                 <div class="row">
                       <div class="col-md-6">
@@ -50,13 +48,13 @@
                               <i class="now-ui-icons arrows-1_minimal-down"></i>
                             </div>
                           </div>
-                          <input 
-                            class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" 
-                            min="{{date('Y-m-d', strtotime('-3 month'))}}" 
-                            max="{{date('Y-m-d', strtotime('+3 month'))}}" 
-                            placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" 
-                            type="date" name="tanggal_awal" 
-                            value="{{ $tanggal_awal ?? '' }}" 
+                          <input
+                            class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}"
+                            min="{{date('Y-m-d', strtotime('-3 month'))}}"
+                            max="{{date('Y-m-d', strtotime('+3 month'))}}"
+                            placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}"
+                            type="date" name="tanggal_awal"
+                            value="{{ $tanggal_awal ?? '' }}"
                             id="tanggal_awal" autofocus>
                           @if ($errors->has('tanggal_awal'))
                             <span class="invalid-feedback" style="display: block;" role="alert">
@@ -74,13 +72,13 @@
                               <i class="now-ui-icons arrows-1_minimal-up"></i>
                             </div>
                           </div>
-                          <input 
-                            class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" 
-                            min="{{date('Y-m-d', strtotime('-3 month'))}}" 
-                            max="{{date('Y-m-d', strtotime('+3 month'))}}" 
-                            placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" 
-                            type="date" name="tanggal_akhir" 
-                            value="{{ $tanggal_akhir ?? '' }}" 
+                          <input
+                            class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}"
+                            min="{{date('Y-m-d', strtotime('-3 month'))}}"
+                            max="{{date('Y-m-d', strtotime('+3 month'))}}"
+                            placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}"
+                            type="date" name="tanggal_akhir"
+                            value="{{ $tanggal_akhir ?? '' }}"
                             id="tanggal_akhir" autofocus>
                           @if ($errors->has('tanggal_akhir'))
                             <span class="invalid-feedback" style="display: block;" role="alert">
@@ -113,8 +111,8 @@
                     </div>
 
                 </form>
-
-              <!-- /Filter Section --> 
+              </div>
+              <!-- /Filter Section -->
           <div>
 
         @if ($message = Session::get('success'))
@@ -133,20 +131,20 @@
                 <div class="col-md-4">
                     <form action="/orders/index" method="get">
                         {{ csrf_field() }}
-                        {{-- <input name="search" class="form-control mb-2" placeholder="Cari perusahaan" type="text" /><input type="submit"> --}}
                         <div class="input-group mb-3">
                             <input type="text" name="cari" class="form-control" placeholder="TX-210914000001">
                             <div class="input-group-append">
                               <input type="submit" class="input-group-text" id="basic-addon2" value="Cari Orders">
                             </div>
                           </div>
+                        </form>
                     </div>
-                </form>
             </div>
             <hr>
           <div class="table-responsive">
-            <table id="" class="table">
+            <table id="abdi" class="table">
               <thead class=" text-primary">
+                  <th>No</th>
                 <th>
                   Date Request
                 </th>
@@ -173,8 +171,9 @@
               </thead>
               <tbody>
 
-                @foreach ($orders as $order )
+                @foreach ($orders as $key => $order )
                 <tr>
+                    <td>{{$key+1}}</td>
                   <td>{{ $order->date_requested }}</td>
                   <td>{{ $order->awb }}</td>
                   <td>{{ $order->ref_id }}</td>
@@ -327,11 +326,10 @@
 @endsection
 @push('js')
   <script type="text/javascript">
-      $(document).ready(function() {
           $('#datatable').DataTable();
           $('#autoWidth').true();
 
-          // set value before loading 
+          // set value before loading
           // tanggal awal
           $('#tanggal_awal').value(date('Y-m-d', strtotime('-3 month')));
           $('#tanggal_akhir').value(date('Y-m-d'));
@@ -343,7 +341,7 @@
       }
 
       document.onreadystatechange = function () {
-          
+
           if (document.readyState == "interactive") {
               // Initialize your application or run some code.
               console.log( "ready ON LOAD vanilla js!" );

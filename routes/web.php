@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
     //--------------------index---------------------------------
     Route::get('orders/index', 'OrdersController@index')->name('orders.index');
     //--------------------exportCSV---------------------------------
-    Route::get('orders/index/export/', 'OrdersController@export')->name('orders.export');
+    Route::get('orders/index/export/{page}', 'OrdersController@export')->name('orders.export');
     //--------------------create Import Order---------------------------------
     Route::post('orders/index/import', 'OrdersController@import')->name('orders.import');
     //--------------------mass update import---------------------------------
