@@ -218,7 +218,7 @@ class OrdersController extends Controller
      */
     public function update(Request $request, orders $orders)
     {
-        dd('masuk');
+        // dd('masuk');
         $orders->update([
             'awb' => $request->awb,
             'date_requested' => $request->date_requested,
@@ -304,7 +304,7 @@ class OrdersController extends Controller
     public function export($page)
     {
         ini_set('memory_limit', '-1');
-        return Excel::download(new OrdersExport, 'orders.xlsx');
+        return Excel::download(new OrdersExport($page), 'orders.xlsx');
         return Redirect()->route('orders.index')->with('success', 'Order has been downloaded!');
     }
 

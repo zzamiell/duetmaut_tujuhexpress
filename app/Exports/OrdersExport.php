@@ -10,11 +10,18 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class OrdersExport implements FromCollection, WithHeadings
 
 {
+    protected $page;
+
+    function __construct($page)
+    {
+        $this->page = $page;
+    }
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
+        $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
         return orders::select(
             'awb',
             'ref_id',
@@ -44,7 +51,9 @@ class OrdersExport implements FromCollection, WithHeadings
             'total_fee',
             'date_requested',
             'update_date',
-        )->get();
+        )->where('date_requested', '>=', $tiga_bulan)
+            ->orderBy('id', 'DESC')
+            ->paginate(50, ['*'], $this->page, $this->page);
     }
 
     public function headings(): array
