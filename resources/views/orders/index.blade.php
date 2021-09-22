@@ -92,15 +92,15 @@
                         <div class="form-group">
                           <label for="orderStatusSelection">Order Status</label>
                           <select name="order_status" class="form-control" id="orderStatusSelection">
-                            <option value="all">All</option>
-                            <option value="info_received">Info Received</option>
-                            <option value="pending">Pending</option>
-                            <option value="in_transit">In Transit</option>
-                            <option value="completed">Completed</option>
-                            <option value="fail_shipper">Fail Shipper</option>
-                            <option value="fail_courier">Fail Courier</option>
-                            <option value="fail_recipient">Fail Recipient</option>
-                            <option value="fail_attempt_1">Faile Attempt</option>
+                            <option value="all" @if(app('request')->input('all') == "all") selected @endif>All</option>
+                            <option value="info_received" @if(app('request')->input('order_status') == "info_received") selected @endif>Info Received</option>
+                            <option value="pending" @if(app('request')->input('pending') == "pending") selected @endif>Pending</option>
+                            <option value="in_transit" @if(app('request')->input('in_transit') == "in_transit") selected @endif>In Transit</option>
+                            <option value="completed" @if(app('request')->input('completed') == "completed") selected @endif>Completed</option>
+                            <option value="fail_shipper" @if(app('request')->input('fail_shipper') == "fail_shipper") selected @endif>Fail Shipper</option>
+                            <option value="fail_courier" @if(app('request')->input('fail_courier') == "fail_courier") selected @endif>Fail Courier</option>
+                            <option value="fail_recipient" @if(app('request')->input('fail_recipient') == "fail_recipient") selected @endif>Fail Recipient</option>
+                            <option value="fail_attempt_1" @if(app('request')->input('fail_attempt_1') == "fail_attempt_1") selected @endif>Faile Attempt</option>
                           </select>
                         </div>
                       </div>

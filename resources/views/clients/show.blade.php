@@ -94,11 +94,30 @@
             <div class="card">
                 {{-- <button type="button" data-toggle="modal" data-target="#pricing{{ $clients->id }}" style="float: right"
                     class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</button> --}}
-                <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
+                    <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
+                    <a style="float: right" class="btn btn-success mt-3" href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">Export</a>
+                    <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a>
                 <div class="card-header">
                     <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
                 </div>
                 <div class="card-body">
+                    {{-- <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            @foreach ($breadcumb as $key => $item )
+                            <li class="breadcrumb-item"><a href="index/{{Request::segment(3)}}/{{$item->service_order}}">{{ $item->service_order }}</a></li>
+                            @endforeach
+                        </ol>
+                      </nav> --}}
+                      <div class="row">
+                        <div class="col-md-8">
+                            <div class="text-center pagination">
+                                {{$pricing->links("pagination::bootstrap-4")}}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                    </div>
+                    <hr>
                     <div class="table-responsive">
                         <table class="table" style="border: none">
                           <thead class=" text-primary">
@@ -119,6 +138,17 @@
                               @endphp
                               <tr style="border: none" align="center">
                                   <td style="vertical-align: middle; border: none">{{ $key+1 }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->account_name }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->pic_number }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->service_order }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->province_name }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->area_name }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->district_name }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->sub_district_name }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->postal_code }}</td>
+                              </tr>
+                              {{-- <tr style="border: none" align="center">
+                                  <td style="vertical-align: middle; border: none">{{ $key+1 }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item['tb_client']['account_name'] }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item['tb_client']['pic_number'] }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item['reff_service_order']['service_order'] }}</td>
@@ -127,9 +157,12 @@
                                   <td style="vertical-align: middle; border: none">{{ $item['reff_area']['district_name'] }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item['reff_area']['sub_district_name'] }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item['reff_area']['postal_code'] }}</td>
-                              </tr>
+                              </tr> --}}
                               @endforeach
                           </tbody>
+                          <div class="text-center pagination">
+                            {{$pricing->links("pagination::bootstrap-4")}}
+                        </div>
                         </table>
                       </div>
                 </div>
@@ -214,103 +247,40 @@
  </div>
 </div>
 
-
-<!-- Modal isi tambah banner -->
-<div class="modal fade" id="pricing{{ $clients->id }}" tabindex="-1" role="dialog"
-    aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <form action="{{ route('insert_pricing') }}" method="POST" id="form-program" class="form-class" name="form-name" enctype="multipart/form-data">
-               {{-- @method('PUT') --}}
-               @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Change client
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    {{-- isi --}}
-                    <div class="form-group">
-                        <label>Account Name</label>
-                        <input type="text" name="acc_name" class="form-control" value="{{ $clients->account_name }}" readonly />
-                        <input type="hidden" name="id_client" class="form-control" value="{{ $clients->id }}" readonly />
-                    </div>
-
-                   <div class="form-group">
-                        <label>Service Order</label>
-                        <select name="service_order" class="form-control" id="">
-                        <optgroup label="Pilih service order">
-                            @foreach ($service as $ar)
-                            <option value="{{$ar->id}}">{{$ar->service_order}}</option>
-                            @endforeach
-                        </optgroup>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Price</label>
-                        <input type="text" name="price" class="form-control" />
-                    </div>
-
-                    <div class="form-group">
-                        <label>Area</label>
-                        <input type="text" name="area" id="area" placeholder="Pilih area pada table dibawah" class="form-control" readonly/>
-                        <input type="hidden" name="id_area" id="id_area" class="form-control" readonly/>
-                    </div>
-                    <hr>
-                    <div>
-                        <small style="float: left; color:red" class="mt-5">*Silahkan pilih area</small>
-                        <div style="float: right" class="col-md-4">
-                            {{-- <form action="/orders/index" method="get"> --}}
-                                {{-- {{ csrf_field() }} --}}
-                                {{-- <input name="search" class="form-control mb-2" placeholder="Cari perusahaan" type="text" /><input type="submit"> --}}
-                                <div class="input-group">
-                                    <input type="text" name="cari" class="form-control" placeholder="TX-210914000001">
-                                    <div class="input-group-append">
-                                      <input type="submit" class="input-group-text" id="basic-addon2" value="Cari Area">
-                                    </div>
-                                </div>
-                            {{-- </form> --}}
-                        </div>
-                    </div>
-                    <table style="width: 100%">
-                        <tr>
-                          <th>Province</th>
-                          <th>Area</th>
-                          <th>District</th>
-                          <th>Subdistrict</th>
-                          <th>Postal code</th>
-                          <th>Action</th>
-                        </tr>
-                        @foreach ($area as $pilih)
-                        <tr align="center">
-                          <td>{{ $pilih->province_name }}</td>
-                          <td>{{ $pilih->area_name }}</td>
-                          <td>{{ $pilih->district_name }}</td>
-                          <td>{{ $pilih->sub_district_name }}</td>
-                          <td>{{ $pilih->postal_code }}</td>
-                          <td><button type="button" onclick="myFunction(<?= $pilih->id ?>)">Pilih area</button></td>
-                        </tr>
-                        @endforeach
-                      </table>
-                      <hr>
-                      <div class="text-center">
-                        {{$area->links("pagination::bootstrap-4")}}
-                    </div>
-
-                    {{-- end isi --}}
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn text-white"
-                        style="background-color: #fc6400">Submit</button>
-                </div>
-            </form>
-        </div>
-    </div>
-   </div>
+ <!-- Modal isi tambah banner -->
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog modal-lg" role="document">
+     <div class="modal-content">
+         <form action="{{Request::fullUrl()}}" method="GET" id="form-program" class="form-class" name="form-name"
+             enctype="multipart/form-data">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="exampleModalLabel">Filter berdasarkan service order</h5>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+             </div>
+             <div class="modal-body">
+                 {{-- isi --}}
+                <div class="form-group">
+                     <label>Service order</label>
+                     <select name="service_order" class="form-control" id="">
+                     <optgroup label="Pilih service order">
+                         @foreach ($breadcumb as $key => $item)
+                         <option value="{{$item->service_order}}">{{$item->service_order}}</option>
+                         @endforeach
+                     </optgroup>
+                     </select>
+                 </div>
+                 {{-- end isi --}}
+             </div>
+             <div class="modal-footer">
+                 <button type="submit" class="btn text-white btn-success">Submit</button>
+             </div>
+         </form>
+     </div>
+ </div>
+ </div>
 
 <script src="{{ asset('sweetalert/sweetalert.min.js') }}"></script>
 
@@ -323,6 +293,12 @@
 @if(Session::has('price'))
 <script type="text/javascript">
   swal("", "Berhasil menambah data pricing client", "success");
+</script>
+@endif
+
+@if(Session::has('export_pricing'))
+<script type="text/javascript">
+  swal("", "Export pricing has been downloaded!", "success");
 </script>
 @endif
 

@@ -71,7 +71,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::get('clients/index', 'ClientsController@index')->name('clients.index');
-    Route::get('clients/index/{id}', 'ClientsController@show')->name('client_show');
+    Route::get('clients/index/{id}/{service}', 'ClientsController@show')->name('client_show');
     Route::post('insert_client', 'ClientsController@insert_client')->name('insert_client');
     Route::post('update_client/{id}', 'ClientsController@update_client')->name('update_client');
     Route::post('hapus_clients/{id}', 'ClientsController@hapus_clients')->name('hapus_clients');
@@ -79,4 +79,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('pricing/index', 'PricingController@index')->name('pricing/index');
     Route::get('add_pricing/{id}', 'ClientsController@add_pricing')->name('add_pricing');
     Route::post('insert_pricing', 'ClientsController@insert_pricing')->name('insert_pricing');
+    Route::get('pricing/index/export/{page}/{id}', 'ClientsController@exportPricing')->name('pricing.export');
 });

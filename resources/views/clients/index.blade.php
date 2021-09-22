@@ -6,6 +6,7 @@
 
 @section('content')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{ asset('assets/mask_input/jquery.maskedinput.js') }}"></script>
   <div class="panel-header panel-header-sm">
   </div>
   <div class="content">
@@ -47,12 +48,12 @@
                               <td style="vertical-align: middle;">{{ $item['pic_name'] }}</td>
                               <td style="vertical-align: middle;">{{ $item['pic_number'] }}</td>
                               <td style="vertical-align: middle;">{{ $item['sales_agent'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['cod_fee'] }}</td>
-                              <td style="vertical-align: middle;">{{ $item['insurance_fee'] }}</td>
+                              <td style="vertical-align: middle;">{{ $item['cod_fee'] }} %</td>
+                              <td style="vertical-align: middle;">{{ $item['insurance_fee'] }} %</td>
                               <td style="vertical-align: middle;">{{ $item['created_at'] }}</td>
                               <td style="vertical-align: middle;">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="{{ route('client_show', $item['id']) }}" type="button" class="btn"><i
+                                <a href="index/{{$item['id']}}/0" type="button" class="btn"><i
                                     class="now-ui-icons ui-1_zoom-bold"></i></a>
                                 <button type="button" class="btn btn-danger"  onclick=deletedata(<?= $item['id'] ?>)><i
                                     class="now-ui-icons ui-1_simple-remove"></i></button>
@@ -189,12 +190,12 @@ aria-hidden="true">
 
                 <div class="form-group">
                     <label>Cod Fee</label>
-                    <input type="text" name="cod_fee" class="form-control" required />
+                    <input type="text" name="cod_fee" class="form-control" id="cod" placeholder="00%" required />
                 </div>
 
                 <div class="form-group">
                     <label>Insurance Fee</label>
-                    <input type="text" name="insurance_fee" class="form-control" required />
+                    <input type="text" name="insurance_fee" id="insurance" placeholder="00%" class="form-control" required />
                 </div>
 
                 {{-- end isi --}}
@@ -217,6 +218,12 @@ aria-hidden="true">
 @endif
 
 <script type="text/javascript">
+    jQuery(function($){
+$("#cod").mask("99%");
+$("#insurance").mask("99%");
+});
+
+
         function tanggal_local(tanggal) {
             return tanggal;
         }
