@@ -97,6 +97,7 @@
                     <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
                     <a style="float: right" class="btn btn-success mt-3" href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">Export</a>
                     <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a>
+                    <a type="button" data-toggle="modal" data-target="#uploadModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Upload Data Pricing</a>
                 <div class="card-header">
                     <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
                 </div>
@@ -281,6 +282,51 @@
      </div>
  </div>
  </div>
+
+
+ <!-- Modal upload data pricing -->
+ <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+ aria-hidden="true">
+ <div class="modal-dialog modal-lg" role="document">
+     <div class="modal-content">
+         <form action="{{Request::fullUrl()}}" method="POST" id="form-program" class="form-class" name="form-name"
+             enctype="multipart/form-data">
+             <div class="modal-header">
+                 <h5 class="modal-title" id="exampleModalLabel">Upload Data Pricing</h5>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                 </button>
+             </div>
+             <div class="modal-body">
+                 {{-- isi --}}
+                <div class="form-group">
+                     <!-- input upload -->
+                     {{ csrf_field() }}
+                    <!--Begin input tanggal pembuatan awal -->
+                    <div class="input-group {{ $errors->has('datapricing') ? ' has-danger' : '' }}">
+                        
+                        <div class="input-group-text">
+                            <i class="now-ui-icons arrows-1_cloud-upload-94"></i>
+                        </div>
+                        <input
+                        class="form-control {{ $errors->has('datapricing') ? ' is-invalid' : '' }}"
+                        type="file" name="datapricing"
+                        value="{{ $datapricing ?? '' }}"
+                        id="datapricing">
+                    </div>
+                 </div>
+                 {{-- end isi --}}
+             </div>
+             <div class="modal-footer">
+                 <button type="submit" class="btn text-white btn-success">Upload</button>
+             </div>
+         </form>
+     </div>
+ </div>
+ </div>
+
+
+ 
 
 <script src="{{ asset('sweetalert/sweetalert.min.js') }}"></script>
 
