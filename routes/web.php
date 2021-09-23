@@ -54,6 +54,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('orders/update/{id}', 'OrdersController@update_order')->name('update');
     //--------------------Filter------------------------
     Route::get('orders/filter', 'OrdersController@filter')->name('orders.filter');
+
+    // proses in create order
+    Route::get('/serviceByaccount/{id}', 'OrdersController@service_order_by_account')->name('serviceByaccount');
+    Route::get('/kode_zip/{service}/{id}', 'OrdersController@load_postal_code')->name('load_postalCode');
+    Route::get('/shipper_detail/{postalcode}', 'OrdersController@shipper_detail')->name('shipper_detail');
+    Route::get('/recipt_detail/{postalcode}', 'OrdersController@recipt_detail')->name('recipt_detail');
+    Route::get('/cod_fee/{idclient}', 'OrdersController@is_cod')->name('cod_fee');
+    Route::get('/insured_fee/{idclient}', 'OrdersController@is_insured')->name('insured_fee');
 });
 
 Route::group(['middleware' => 'auth'], function () {

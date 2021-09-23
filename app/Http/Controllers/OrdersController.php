@@ -113,9 +113,10 @@ class OrdersController extends Controller
      */
     public function create()
     {
+        $data['account'] = DB::table('tb_clients')->select('id', 'account_name')->get();
 
 
-        return view('orders.create');
+        return view('orders.create', $data);
     }
 
 
@@ -342,5 +343,68 @@ class OrdersController extends Controller
 
 
         return redirect()->route('orders.index')->with('success', 'Mass Order Uploaded');
+    }
+
+    public function service_order_by_account($id)
+    {
+        $service = DB::table('tb_pricing')
+            ->select('service_order')
+            ->where('id_client', $id)
+            ->groupBy('service_order')
+            ->get();
+        // dd($service);
+        return json_encode($service);
+    }
+
+    public function load_postal_code($service, $id)
+    {
+        $zip = DB::table('tb_pricing')
+            ->select('id_area', 'postal_code')
+            ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
+            ->where('id_client', $id)
+            ->where('service_order', $service)
+            ->get();
+        // dd($zip);
+        return json_encode($zip);
+    }
+
+    public function shipper_detail($postalcode)
+    {
+        $detail = DB::table('reff_area')
+            ->select('area_name', 'district_name')
+            ->where('postal_code', $postalcode)
+            ->get();
+
+        return json_encode($detail);
+    }
+
+    public function recipt_detail($postalcode)
+    {
+        $detail = DB::table('reff_area')
+            ->select('area_name', 'district_name')
+            ->where('postal_code', $postalcode)
+            ->get();
+
+        return json_encode($detail);
+    }
+
+    public function is_cod($idclient)
+    {
+        $cod_fee = DB::table('tb_clients')
+            ->select('cod_fee')
+            ->where('id', $idclient)
+            ->first();
+        // dd($cod_fee);
+        return json_encode($cod_fee);
+    }
+
+    public function is_insured($idclient)
+    {
+        $insurance_fee = DB::table('tb_clients')
+            ->select('insurance_fee')
+            ->where('id', $idclient)
+            ->first();
+        // dd($cod_fee);
+        return json_encode($insurance_fee);
     }
 }

@@ -7,4 +7,4 @@
 <script src="https://cdn.datatables.net/buttons/1.6.5/js/buttons.print.min.js"></script>
 
 <!--begin::Page Scripts(used by this page) -->
-<script type="text/javascript" src="{{asset('js/config.js')}}"></script>
+{{-- <script type="text/javascript" src="{{asset('js/config.js')}}"></script> --}}
