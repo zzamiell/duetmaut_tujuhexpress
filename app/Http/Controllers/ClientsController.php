@@ -32,6 +32,57 @@ class ClientsController extends Controller
         return view('clients.index', compact('clients', 'category'));
     }
 
+    public function importExcel(Request $request) {
+        
+        // $file = $request->all();
+        dd($request->file('file'));
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+
+            // Mendapatkan Nama File
+            $nama_file = $file->getClientOriginalName();
+       
+            // Mendapatkan Extension File
+            $extension = $file->getClientOriginalExtension();
+
+            $file_mime = $file->getmimeType();
+            $fileContent = File::get($file);
+
+            $multipart = [
+                [
+                    'name'     => 'datapricing',
+                    'contents' => $fileContent,
+                    'filename' => $nama_file,
+                    'Mime-Type'=> $file_mime,
+                    'extension'=> $extension
+                ]
+            ];
+
+            // dd($multipart);
+
+            $data_pricing_added = config('client_be')->request('POST', '/api/v1/tb-pricing/upload', [
+                'headers' => [
+                    // 'Authorization' => 'Bearer ' . Session::get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'exceptions' => false,
+                'multipart' => $multipart
+            ]);
+
+            $param=[];
+            $param= (string) $data_pricing_added->getBody();
+            $data = json_decode($param, true);
+
+            // dd($data);
+            if($data['statusCode']!=200){
+                    return json_encode(['statusCode'=>$data['statusCode'],'message'=>$data['message']]);
+            } else {
+                return json_encode(['statusCode'=>$data['statusCode'],'message'=>$data['message']]);
+            }
+
+        }
+    }
+
     public function show(Request $request, $id, $service)
     {
         if ($request->get('service_order')) {

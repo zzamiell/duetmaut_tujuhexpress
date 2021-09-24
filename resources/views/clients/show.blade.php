@@ -287,42 +287,38 @@
  <!-- Modal upload data pricing -->
  <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
  aria-hidden="true">
- <div class="modal-dialog modal-lg" role="document">
-     <div class="modal-content">
-         <form action="{{Request::fullUrl()}}" method="POST" id="form-program" class="form-class" name="form-name"
-             enctype="multipart/form-data">
-             <div class="modal-header">
-                 <h5 class="modal-title" id="exampleModalLabel">Upload Data Pricing</h5>
-                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                 </button>
-             </div>
-             <div class="modal-body">
-                 {{-- isi --}}
-                <div class="form-group">
-                     <!-- input upload -->
-                     {{ csrf_field() }}
-                    <!--Begin input tanggal pembuatan awal -->
-                    <div class="input-group {{ $errors->has('datapricing') ? ' has-danger' : '' }}">
-                        
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Data Pricing</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+                
+            <div class="modal-body">
+                    {{-- isi --}}
+                    <div class="input-group">
+
                         <div class="input-group-text">
                             <i class="now-ui-icons arrows-1_cloud-upload-94"></i>
                         </div>
-                        <input
-                        class="form-control {{ $errors->has('datapricing') ? ' is-invalid' : '' }}"
-                        type="file" name="datapricing"
-                        value="{{ $datapricing ?? '' }}"
-                        id="datapricing">
-                    </div>
-                 </div>
-                 {{-- end isi --}}
-             </div>
-             <div class="modal-footer">
-                 <button type="submit" class="btn text-white btn-success">Upload</button>
-             </div>
-         </form>
-     </div>
- </div>
+                        <form class="form-class" id="formupload">
+                            <input
+                                        type="file" 
+                                        name="import_file" id="datapricingid">
+                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                                    </div>
+                                    {{-- end isi --}}
+                                </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn text-white btn-success" onclick="processImport()">Upload</button>
+                            </div>
+                        </form>
+                     </div>
+            </div>
+        </div>
+    </div>
  </div>
 
 
@@ -352,6 +348,58 @@
 function myFunction(id) {
     $("#area").val("area sudah terpilih");
     $("#id_area").val(id);
+}
+
+function processImport(){
+
+    if($('#file').val()===''){
+        $( "#file" ).addClass( "is-invalid" );
+        return false;
+    }else{
+        $("#file").removeClass( "is-invalid" );
+
+    }
+
+    var formData = new FormData();
+    formData.append( 'file', $( '#datapricingid' )[0].files[0] );
+
+    console.log("FORM DATA :");
+    console.log(formData);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('#token').val()
+        }
+    });
+
+    console.log("UPLOAD BRO...");
+    console.log('{{ route('importExcelTbPricing') }}');
+
+    $.ajax({
+        type: 'POST',
+        url: '{{ route('importExcelTbPricing') }}',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res){
+            console.log("THIS IS FROM AJAX : ");
+            console.log(res);
+            console.log("================");
+            var parse = $.parseJSON(res);
+            console.log("================");
+
+            if (parse.statusCode == 200){
+                console.log("success upload");
+                console.log(parse.message)
+            } else {
+                console.log("error upload");
+                console.log(parse.message)
+            }
+        }
+    });
+
+
+    
 }
 </script>
 
