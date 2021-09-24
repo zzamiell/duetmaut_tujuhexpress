@@ -81,8 +81,8 @@
                         <select name="service_type" class="form-control">
                             <optgroup label="Pilih service orders">
                                 <option value="">Pilih service type</option>
-                                <option value="1">Delivery</option>
-                                <option value="2">Pick up</option>
+                                <option value="delivery">Delivery</option>
+                                <option value="pickup">Pick up</option>
                             </optgroup>
                         </select>
                         {{-- <input type="string" name="service_type" class=".form-control::-webkit-input-placeholder form-control" placeholder="" > --}}
@@ -217,7 +217,7 @@
                 <div class="col-md-7 pr-1">
                     <div class="form-group">
                         <label>{{__("Weight")}}</label>
-                        <input type="string" name="weight" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
+                        <input type="string" name="weight" id="berat" onkeyup="deliv(this);" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
                     </div>
                 </div>
             </div>
@@ -276,7 +276,7 @@
                 <div class="col-md-7 pr-1">
                     <div class="form-group">
                         <label>{{__("Delivery Fee")}}</label>
-                        <input type="string" name="delivery_fee" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
+                        <input type="string" name="delivery_fee" id="dfee" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
                     </div>
                 </div>
             </div>
@@ -304,12 +304,13 @@
                 <div class="col-md-7 pr-1">
                     <div class="form-group">
                         <label>{{__("Total Fee")}}</label>
-                        <input type="string" name="total_fee" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
+                        <input type="string" name="total_fee" id="total" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
                     </div>
                 </div>
             </div>
 
             <input type="text" name="" id="id_client">
+            <input type="text" name="" id="theprice">
 
                  <div class="right">
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -364,7 +365,7 @@
                 var _items = '';
                 _items = "<option value=''>Pilh postal code</option>";
                 $.each(obj, function (k, v) {
-                    _items += "<option value='" + v.postal_code + "'>" + v.postal_code + "</option>";
+                    _items += "<option value='" + v.postal_code +'-'+ v.id+"'>" + v.postal_code + "</option>";
                 });
                 $('#recipt_code').html(_items);
                 $('#ship_code').html(_items);
@@ -374,34 +375,46 @@
 
     function shipper_code(item) {
         var ship_code = $("#ship_code").val();
-        console.log("ship_code  : " + ship_code);
+        var the_code = ship_code.split("-");
+        console.log("ship_code  : " + the_code[0]);
 
         $.ajax({
-            url: "{{url('/shipper_detail')}}/" + ship_code,
+            url: "{{url('/shipper_detail')}}/" + the_code[0],
             success: function (data) {
                 var json = data,
                 obj = JSON.parse(json);
-                console.log(obj[0].area_name);
+
                 $('#ship_area').val(obj[0].area_name);
                 $('#ship_district').val(obj[0].district_name);
-                // $('#recipt_area').val(obj[0].area_name);
-                // $('#recipt_district').val(obj[0].district_name);
             }
         });
     }
 
     function recip_code(item) {
         var recipt_code = $("#recipt_code").val();
-        console.log("recipt_code  : " + recipt_code);
-
+        var the_code = recipt_code.split("-");
+        var id_client = $("#id_client").val();
+        console.log("recipt_code  : " + the_code[0]);
+        console.log("id_pricing  : " + the_code[1]);
         $.ajax({
-            url: "{{url('/recipt_detail')}}/" + recipt_code,
+            url: "{{url('/recipt_detail')}}/" + the_code[0],
             success: function (data) {
                 var json = data,
                 obj = JSON.parse(json);
-                // console.log(obj);
+
                 $('#recipt_area').val(obj[0].area_name);
                 $('#recipt_district').val(obj[0].district_name);
+
+                // ajak untuk dapatkan pricing
+                $.ajax({
+                    url: "{{url('/get_pricing')}}/" + the_code[1],
+                    success: function (data) {
+                        var json = data,
+                        obj = JSON.parse(json);
+                        $('#theprice').val(obj.pricing);
+                    }
+                });
+                // end ajax
             }
         });
     }
@@ -422,10 +435,24 @@
                 var hasil = valofgod * codnya / 100;
 
                 $('#cod_fee').val(hasil);
+
+                var delivery_fee = $("#dfee").val();
+            var cod = $("#cod_fee").val();
+            var insurance = $("#insurance_fee").val();
+
+            var res = parseInt(delivery_fee) + parseInt(cod) + parseInt(insurance);
+            $('#total').val(res);
             }
         });
         }else{
             $('#cod_fee').val(0);
+
+            var delivery_fee = $("#dfee").val();
+            var cod = $("#cod_fee").val();
+            var insurance = $("#insurance_fee").val();
+
+            var res = parseInt(delivery_fee) + parseInt(cod) + parseInt(insurance);
+            $('#total').val(res);
         }
 
     }
@@ -452,6 +479,15 @@
             $('#insurance_fee').val(0);
         }
 
+    }
+
+    function deliv(item) {
+        var weight = $("#berat").val();
+        var berat = Math.ceil(weight);
+        var price = $("#theprice").val();
+
+        var res = parseInt(berat) * parseInt(price);
+        $('#dfee').val(res);
     }
   </script>
 @endsection

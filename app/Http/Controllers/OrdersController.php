@@ -124,7 +124,10 @@ class OrdersController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->awb);
+        // dd($request->all());
+        $ship = explode('-', $request->get('shipper_postal_code'));
+        $recipt = explode('-', $request->get('recipient_postal_code'));
+        // dd($ship);
         $insert =  orders::create([
             'awb' => $request->awb,
             // 'date_requested' => $request->date_requested,
@@ -135,13 +138,13 @@ class OrdersController extends Controller
             'shipper_name' => $request->shipper_name,
             'shipper_phone' => $request->shipper_phone,
             'shipper_address' => $request->shipper_address,
-            'shipper_postal_code' => $request->shipper_postal_code,
+            'shipper_postal_code' => $ship[0],
             'shipper_area' => $request->shipper_area,
             'shipper_district' => $request->shipper_district,
             'recipient_name' => $request->recipient_name,
             'recipient_phone' => $request->recipient_phone,
             'recipient_address' => $request->recipient_address,
-            'recipient_postal_code' => $request->recipient_postal_code,
+            'recipient_postal_code' => $recipt[0],
             'recipient_area' => $request->recipient_area,
             'recipient_district' => $request->recipient_district,
             'weight' => $request->weight,
@@ -359,7 +362,7 @@ class OrdersController extends Controller
     public function load_postal_code($service, $id)
     {
         $zip = DB::table('tb_pricing')
-            ->select('id_area', 'postal_code')
+            ->select('tb_pricing.id', 'id_area', 'postal_code')
             ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
             ->where('id_client', $id)
             ->where('service_order', $service)
@@ -381,7 +384,7 @@ class OrdersController extends Controller
     public function recipt_detail($postalcode)
     {
         $detail = DB::table('reff_area')
-            ->select('area_name', 'district_name')
+            ->select('id', 'area_name', 'district_name')
             ->where('postal_code', $postalcode)
             ->get();
 
@@ -406,5 +409,15 @@ class OrdersController extends Controller
             ->first();
         // dd($cod_fee);
         return json_encode($insurance_fee);
+    }
+
+    public function ambil_pricing($idpricing)
+    {
+        $pricing = DB::table('tb_pricing')
+            ->select('pricing')
+            ->where('id', $idpricing)
+            ->first();
+        // dd($cod_fee);
+        return json_encode($pricing);
     }
 }

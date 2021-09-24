@@ -62,6 +62,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/recipt_detail/{postalcode}', 'OrdersController@recipt_detail')->name('recipt_detail');
     Route::get('/cod_fee/{idclient}', 'OrdersController@is_cod')->name('cod_fee');
     Route::get('/insured_fee/{idclient}', 'OrdersController@is_insured')->name('insured_fee');
+    Route::get('/get_pricing/{idpricing}', 'OrdersController@ambil_pricing')->name('get_pricing');
 });
 
 Route::group(['middleware' => 'auth'], function () {
