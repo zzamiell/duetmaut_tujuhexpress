@@ -131,6 +131,7 @@
                            <th>Districr</th>
                            <th>Subdistrict</th>
                            <th>Postal code</th>
+                           <th>Pricing</th>
                           </thead>
                           <tbody>
                               @foreach ($pricing as $key => $item)
@@ -147,6 +148,7 @@
                                   <td style="vertical-align: middle; border: none">{{ $item->district_name }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item->sub_district_name }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item->postal_code }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->pricing }}</td>
                               </tr>
                               {{-- <tr style="border: none" align="center">
                                   <td style="vertical-align: middle; border: none">{{ $key+1 }}</td>
@@ -390,10 +392,14 @@ function processImport(){
 
             if (parse.statusCode == 200){
                 console.log("success upload");
-                console.log(parse.message)
+                console.log(parse.message);
+                swal("", parse.message, "success");
+                $('#uploadModal').modal('toggle'); 
             } else {
                 console.log("error upload");
-                console.log(parse.message)
+                console.log(parse.message);
+                swal("", parse.message, "error");
+                $('#uploadModal').modal('toggle');
             }
         }
     });

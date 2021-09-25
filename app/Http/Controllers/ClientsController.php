@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
+use File;
 
 // export excel
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,7 +36,7 @@ class ClientsController extends Controller
     public function importExcel(Request $request) {
         
         // $file = $request->all();
-        dd($request->file('file'));
+        // dd($request->file('file'));
         if($request->hasFile('file')){
             $file = $request->file('file');
 
@@ -129,7 +130,6 @@ class ClientsController extends Controller
             $pricing =  DB::table('tb_pricing')
                 ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
                 ->join('tb_clients', 'tb_clients.id', '=', 'tb_pricing.id_client')
-                ->join('reff_service_order', 'reff_service_order.id', '=', 'tb_pricing.id_service_order')
                 ->where('id_client', $id)
                 ->orderBy('tb_pricing.id', 'DESC')
                 ->paginate(10);
@@ -207,7 +207,7 @@ class ClientsController extends Controller
         try {
             $data = array(
                 'id_client' => (int)$request->get('id_client'),
-                'id_service_order' => (int)$request->get('service_order'),
+                'service_order' => $request->get('service_order'),
                 'id_area' => (int)$request->get('id_area'),
                 'pricing' => (int)$request->get('price'),
             );
@@ -221,9 +221,9 @@ class ClientsController extends Controller
             ]);
 
             if ($create) {
-                return redirect()->to('clients/index/' . $request->get('id_client'))->with('price', 'Berhasil menambah pricing');
+                return redirect()->to('clients/index/' . $request->get('id_client')."/0")->with('price', 'Berhasil menambah pricing');
             } else {
-                return redirect()->to('clients/index/' . $request->get('id_client'))->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+                return redirect()->to('clients/index/' . $request->get('id_client')."/0")->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
             }
         } catch (\Exception $e) {
             dd($e);
