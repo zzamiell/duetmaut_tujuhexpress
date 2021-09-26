@@ -31,18 +31,12 @@
 
                            <div class="form-group">
                                 <label>Service Order</label>
-                                <select name="service_order" class="form-control" id="">
-                                <optgroup label="Pilih service order">
-                                    @foreach ($service as $ar)
-                                    <option value="{{$ar->id}}">{{$ar->service_order}}</option>
-                                    @endforeach
-                                </optgroup>
-                                </select>
+                                <input type="text" name="service_order" class="form-control" />
                             </div>
 
                             <div class="form-group">
                                 <label>Price</label>
-                                <input type="text" name="price" class="form-control" />
+                                <input type="text" name="price" id="price" class="form-control" />
                             </div>
 
                             <div class="form-group">
@@ -73,6 +67,7 @@
                                   <th>District</th>
                                   <th>Subdistrict</th>
                                   <th>Postal code</th>
+                                  <th>Price Template</th>
                                   <th>Action</th>
                                 </tr>
                                 @foreach ($area as $pilih)
@@ -82,7 +77,8 @@
                                   <td>{{ $pilih->district_name }}</td>
                                   <td>{{ $pilih->sub_district_name }}</td>
                                   <td>{{ $pilih->postal_code }}</td>
-                                  <td><button type="button" onclick="myFunction(<?= $pilih->id ?>)">Pilih area</button></td>
+                                  <td>{{ $pilih->price_template }}</td>
+                                  <td><button type="button" onclick="chooseArea(<?= $pilih->id ?>, <?= $pilih->price_template ?>)">Pilih area</button></td>
                                 </tr>
                                 @endforeach
                               </table>
@@ -121,9 +117,10 @@
 @endif
 
 <script type="text/javascript">
-function myFunction(id) {
+function chooseArea(id, price_template) {
     $("#area").val("area sudah terpilih");
     $("#id_area").val(id);
+    $("#price").val(price_template);
 }
 </script>
 

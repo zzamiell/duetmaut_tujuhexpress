@@ -97,6 +97,7 @@
                     <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
                     <a style="float: right" class="btn btn-success mt-3" href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">Export</a>
                     <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a>
+                    <a type="button" data-toggle="modal" data-target="#uploadModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Upload Data Pricing</a>
                 <div class="card-header">
                     <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
                 </div>
@@ -130,6 +131,7 @@
                            <th>Districr</th>
                            <th>Subdistrict</th>
                            <th>Postal code</th>
+                           <th>Pricing</th>
                           </thead>
                           <tbody>
                               @foreach ($pricing as $key => $item)
@@ -146,6 +148,7 @@
                                   <td style="vertical-align: middle; border: none">{{ $item->district_name }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item->sub_district_name }}</td>
                                   <td style="vertical-align: middle; border: none">{{ $item->postal_code }}</td>
+                                  <td style="vertical-align: middle; border: none">{{ $item->pricing }}</td>
                               </tr>
                               {{-- <tr style="border: none" align="center">
                                   <td style="vertical-align: middle; border: none">{{ $key+1 }}</td>
@@ -282,6 +285,47 @@
  </div>
  </div>
 
+
+ <!-- Modal upload data pricing -->
+ <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+ aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Upload Data Pricing</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+            </div>
+                
+            <div class="modal-body">
+                    {{-- isi --}}
+                    <div class="input-group">
+
+                        <div class="input-group-text">
+                            <i class="now-ui-icons arrows-1_cloud-upload-94"></i>
+                        </div>
+                        <form class="form-class" id="formupload">
+                            <input
+                                        type="file" 
+                                        name="import_file" id="datapricingid">
+                            <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                                    </div>
+                                    {{-- end isi --}}
+                                </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn text-white btn-success" onclick="processImport()">Upload</button>
+                            </div>
+                        </form>
+                     </div>
+            </div>
+        </div>
+    </div>
+ </div>
+
+
+ 
+
 <script src="{{ asset('sweetalert/sweetalert.min.js') }}"></script>
 
 @if(Session::has('edit'))
@@ -306,6 +350,62 @@
 function myFunction(id) {
     $("#area").val("area sudah terpilih");
     $("#id_area").val(id);
+}
+
+function processImport(){
+
+    if($('#file').val()===''){
+        $( "#file" ).addClass( "is-invalid" );
+        return false;
+    }else{
+        $("#file").removeClass( "is-invalid" );
+
+    }
+
+    var formData = new FormData();
+    formData.append( 'file', $( '#datapricingid' )[0].files[0] );
+
+    console.log("FORM DATA :");
+    console.log(formData);
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('#token').val()
+        }
+    });
+
+    console.log("UPLOAD BRO...");
+    console.log('{{ route('importExcelTbPricing') }}');
+
+    $.ajax({
+        type: 'POST',
+        url: '{{ route('importExcelTbPricing') }}',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (res){
+            console.log("THIS IS FROM AJAX : ");
+            console.log(res);
+            console.log("================");
+            var parse = $.parseJSON(res);
+            console.log("================");
+
+            if (parse.statusCode == 200){
+                console.log("success upload");
+                console.log(parse.message);
+                swal("", parse.message, "success");
+                $('#uploadModal').modal('toggle'); 
+            } else {
+                console.log("error upload");
+                console.log(parse.message);
+                swal("", parse.message, "error");
+                $('#uploadModal').modal('toggle');
+            }
+        }
+    });
+
+
+    
 }
 </script>
 

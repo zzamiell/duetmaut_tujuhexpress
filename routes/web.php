@@ -89,4 +89,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('add_pricing/{id}', 'ClientsController@add_pricing')->name('add_pricing');
     Route::post('insert_pricing', 'ClientsController@insert_pricing')->name('insert_pricing');
     Route::get('pricing/index/export/{page}/{id}', 'ClientsController@exportPricing')->name('pricing.export');
+    Route::post('importExcelTbPricing', ['as' => 'importExcelTbPricing', 'uses'=>'ClientsController@importExcel']);
 });

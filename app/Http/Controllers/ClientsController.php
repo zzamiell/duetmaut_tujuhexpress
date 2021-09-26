@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
+use File;
 
 // export excel
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,6 +31,57 @@ class ClientsController extends Controller
         $category = DB::table('reff_client_category')->get();
         // dd($clients[0]['reff_client_category']['id']);
         return view('clients.index', compact('clients', 'category'));
+    }
+
+    public function importExcel(Request $request) {
+        
+        // $file = $request->all();
+        // dd($request->file('file'));
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+
+            // Mendapatkan Nama File
+            $nama_file = $file->getClientOriginalName();
+       
+            // Mendapatkan Extension File
+            $extension = $file->getClientOriginalExtension();
+
+            $file_mime = $file->getmimeType();
+            $fileContent = File::get($file);
+
+            $multipart = [
+                [
+                    'name'     => 'datapricing',
+                    'contents' => $fileContent,
+                    'filename' => $nama_file,
+                    'Mime-Type'=> $file_mime,
+                    'extension'=> $extension
+                ]
+            ];
+
+            // dd($multipart);
+
+            $data_pricing_added = config('client_be')->request('POST', '/api/v1/tb-pricing/upload', [
+                'headers' => [
+                    // 'Authorization' => 'Bearer ' . Session::get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'exceptions' => false,
+                'multipart' => $multipart
+            ]);
+
+            $param=[];
+            $param= (string) $data_pricing_added->getBody();
+            $data = json_decode($param, true);
+
+            // dd($data);
+            if($data['statusCode']!=200){
+                    return json_encode(['statusCode'=>$data['statusCode'],'message'=>$data['message']]);
+            } else {
+                return json_encode(['statusCode'=>$data['statusCode'],'message'=>$data['message']]);
+            }
+
+        }
     }
 
     public function show(Request $request, $id, $service)
@@ -78,7 +130,6 @@ class ClientsController extends Controller
             $pricing =  DB::table('tb_pricing')
                 ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
                 ->join('tb_clients', 'tb_clients.id', '=', 'tb_pricing.id_client')
-                ->join('reff_service_order', 'reff_service_order.id', '=', 'tb_pricing.id_service_order')
                 ->where('id_client', $id)
                 ->orderBy('tb_pricing.id', 'DESC')
                 ->paginate(10);
@@ -156,7 +207,7 @@ class ClientsController extends Controller
         try {
             $data = array(
                 'id_client' => (int)$request->get('id_client'),
-                'id_service_order' => (int)$request->get('service_order'),
+                'service_order' => $request->get('service_order'),
                 'id_area' => (int)$request->get('id_area'),
                 'pricing' => (int)$request->get('price'),
             );
@@ -170,9 +221,9 @@ class ClientsController extends Controller
             ]);
 
             if ($create) {
-                return redirect()->to('clients/index/' . $request->get('id_client'))->with('price', 'Berhasil menambah pricing');
+                return redirect()->to('clients/index/' . $request->get('id_client')."/0")->with('price', 'Berhasil menambah pricing');
             } else {
-                return redirect()->to('clients/index/' . $request->get('id_client'))->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+                return redirect()->to('clients/index/' . $request->get('id_client')."/0")->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
             }
         } catch (\Exception $e) {
             dd($e);
