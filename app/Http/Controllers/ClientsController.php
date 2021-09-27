@@ -33,16 +33,17 @@ class ClientsController extends Controller
         return view('clients.index', compact('clients', 'category'));
     }
 
-    public function importExcel(Request $request) {
-        
+    public function importExcel(Request $request)
+    {
+
         // $file = $request->all();
         // dd($request->file('file'));
-        if($request->hasFile('file')){
+        if ($request->hasFile('file')) {
             $file = $request->file('file');
 
             // Mendapatkan Nama File
             $nama_file = $file->getClientOriginalName();
-       
+
             // Mendapatkan Extension File
             $extension = $file->getClientOriginalExtension();
 
@@ -54,8 +55,8 @@ class ClientsController extends Controller
                     'name'     => 'datapricing',
                     'contents' => $fileContent,
                     'filename' => $nama_file,
-                    'Mime-Type'=> $file_mime,
-                    'extension'=> $extension
+                    'Mime-Type' => $file_mime,
+                    'extension' => $extension
                 ]
             ];
 
@@ -70,17 +71,16 @@ class ClientsController extends Controller
                 'multipart' => $multipart
             ]);
 
-            $param=[];
-            $param= (string) $data_pricing_added->getBody();
+            $param = [];
+            $param = (string) $data_pricing_added->getBody();
             $data = json_decode($param, true);
 
             // dd($data);
-            if($data['statusCode']!=200){
-                    return json_encode(['statusCode'=>$data['statusCode'],'message'=>$data['message']]);
+            if ($data['statusCode'] != 200) {
+                return json_encode(['statusCode' => $data['statusCode'], 'message' => $data['message']]);
             } else {
-                return json_encode(['statusCode'=>$data['statusCode'],'message'=>$data['message']]);
+                return json_encode(['statusCode' => $data['statusCode'], 'message' => $data['message']]);
             }
-
         }
     }
 
@@ -101,12 +101,12 @@ class ClientsController extends Controller
             $pricing =  DB::table('tb_pricing')
                 ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
                 ->join('tb_clients', 'tb_clients.id', '=', 'tb_pricing.id_client')
-                ->join('reff_service_order', 'reff_service_order.id', '=', 'tb_pricing.id_service_order')
-                ->where('id_client', $id)
+                // ->join('reff_service_order', 'reff_service_order.id', '=', 'tb_pricing.id_service_order')
+                ->where('tb_pricing.id_client', $id)
                 ->where('tb_pricing.service_order', $request->get('service_order'))
                 ->orderBy('tb_pricing.id', 'DESC')
                 ->paginate(10);
-
+            // dd($pricing);
             return view('clients.show', compact('clients', 'category', 'area', 'service', 'pricing', 'breadcumb'));
         } else {
             $clients =  DB::table('tb_clients')->where('id', $id)->first();
@@ -221,9 +221,9 @@ class ClientsController extends Controller
             ]);
 
             if ($create) {
-                return redirect()->to('clients/index/' . $request->get('id_client')."/0")->with('price', 'Berhasil menambah pricing');
+                return redirect()->to('clients/index/' . $request->get('id_client') . "/0")->with('price', 'Berhasil menambah pricing');
             } else {
-                return redirect()->to('clients/index/' . $request->get('id_client')."/0")->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+                return redirect()->to('clients/index/' . $request->get('id_client') . "/0")->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
             }
         } catch (\Exception $e) {
             dd($e);

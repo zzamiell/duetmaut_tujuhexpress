@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
     //--------------------index---------------------------------
     Route::get('orders/index', 'OrdersController@index')->name('orders.index');
     //--------------------exportCSV---------------------------------
-    Route::get('orders/index/export/{page}', 'OrdersController@export')->name('orders.export');
+    Route::get('orders/index/export/{page}/{tglawal}/{tglakhir}/{status}', 'OrdersController@export')->name('orders.export');
     //--------------------create Import Order---------------------------------
     Route::post('orders/index/import', 'OrdersController@import')->name('orders.import');
     //--------------------mass update import---------------------------------
@@ -89,5 +89,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('add_pricing/{id}', 'ClientsController@add_pricing')->name('add_pricing');
     Route::post('insert_pricing', 'ClientsController@insert_pricing')->name('insert_pricing');
     Route::get('pricing/index/export/{page}/{id}', 'ClientsController@exportPricing')->name('pricing.export');
-    Route::post('importExcelTbPricing', ['as' => 'importExcelTbPricing', 'uses'=>'ClientsController@importExcel']);
+    Route::post('importExcelTbPricing', ['as' => 'importExcelTbPricing', 'uses' => 'ClientsController@importExcel']);
 });

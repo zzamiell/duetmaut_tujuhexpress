@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <!-- Extra details for Live View on GitHub Pages -->
   <!-- Canonical SEO -->
-  <link rel="canonical" href="https://www.creative-tim.com/product/now-ui-dashboard-pro" />
+  {{-- <link rel="canonical" href="https://www.creative-tim.com/product/now-ui-dashboard-pro" /> --}}
 
 
   <!--  Social tags      -->
@@ -20,7 +20,7 @@
   <meta itemprop="name" content="Now Ui Dashboard PRO by Creative Tim">
   <meta itemprop="description" content="Now UI Dashboard PRO is a beautiful Bootstrap 4 admin dashboard with a large number of components, designed to look beautiful, clean and organized. If you are looking for a tool to manage dates about your business, this dashboard is the thing for you.">
 
-  <meta itemprop="image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg">
+  {{-- <meta itemprop="image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"> --}}
 
 
   <!-- Twitter Card data -->
@@ -30,15 +30,15 @@
 
   <meta name="twitter:description" content="Now UI Dashboard PRO is a beautiful Bootstrap 4 admin dashboard with a large number of components, designed to look beautiful, clean and organized. If you are looking for a tool to manage dates about your business, this dashboard is the thing for you.">
   <meta name="twitter:creator" content="@creativetim">
-  <meta name="twitter:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg">
+  {{-- <meta name="twitter:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"> --}}
 
 
   <!-- Open Graph data -->
   <meta property="fb:app_id" content="655968634437471">
   <meta property="og:title" content="Now Ui Dashboard PRO by Creative Tim" />
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="http://demos.creative-tim.com/now-ui-dashboard-pro/examples/dashboard.html" />
-  <meta property="og:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"/>
+  {{-- <meta property="og:url" content="http://demos.creative-tim.com/now-ui-dashboard-pro/examples/dashboard.html" /> --}}
+  {{-- <meta property="og:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"/> --}}
   <meta property="og:description" content="Now UI Dashboard PRO is a beautiful Bootstrap 4 admin dashboard with a large number of components, designed to look beautiful, clean and organized. If you are looking for a tool to manage dates about your business, this dashboard is the thing for you." />
   <meta property="og:site_name" content="Creative Tim" />
   <title>
@@ -115,10 +115,10 @@
   <script src="{{ asset('assets') }}/js/core/jquery.min.js"></script>
   <script src="{{ asset('assets') }}/js/core/popper.min.js"></script>
   <script src="{{ asset('assets') }}/js/core/bootstrap.min.js"></script>
-  
+
   <script src="{{ asset('assets') }}/js/dataTables.min.js"></script>
   @yield('scripts')
-  
+
   <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.jquery.min.js"></script>
 
 
@@ -134,7 +134,7 @@
   <script src="{{ asset('assets') }}/js/now-ui-dashboard.min.js?v=1.3.0" type="text/javascript"></script>
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
   <script src="{{ asset('assets') }}/demo/demo.js"></script>
-    
+
   @include('layouts.script')
   @stack('js')
 </body>

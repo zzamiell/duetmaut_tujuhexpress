@@ -309,8 +309,8 @@
                 </div>
             </div>
 
-            <input type="text" name="" id="id_client">
-            <input type="text" name="" id="theprice">
+            <input type="hidden" name="" id="id_client">
+            <input type="hidden" name="" id="theprice">
 
                  <div class="right">
                 <button type="submit" class="btn btn-primary">Submit</button>
