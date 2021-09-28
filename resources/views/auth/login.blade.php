@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="col-md-4 ml-auto mr-auto">
-            <form role="form" method="POST" action="{{ route('login') }}">
+            <form   id="loginForm" novalidate="novalidate">
                 @csrf
             <div class="card card-login card-plain">
                 <div class="card-header ">
@@ -41,8 +41,9 @@
                         <i class="now-ui-icons users_circle-08"></i>
                     </div>
                     </span>
-                    <input class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" type="email" name="email" value="{{ old('email', 'admin@nowui.com') }}" required autofocus>
+                    <input class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" type="email" name="email" id="email" required autofocus>
                 </div>
+                
                 @if ($errors->has('email'))
                     <span class="invalid-feedback" style="display: block;" role="alert">
                     <strong>{{ $errors->first('email') }}</strong>
@@ -54,7 +55,7 @@
                         <i class="now-ui-icons objects_key-25"></i></i>
                     </div>
                     </div>
-                    <input placeholder="Password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password" value="secret" required>
+                    <input placeholder="Password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }}" name="password" placeholder="{{ __('Password') }}" type="password" id="password" value="secret" required>
                 </div>
                 @if ($errors->has('password'))
                     <span class="invalid-feedback" style="display: block;" role="alert">
@@ -63,7 +64,8 @@
                 @endif
                 </div>
                 <div class="card-footer ">
-                <button  type = "submit" class="btn btn-primary btn-round btn-lg btn-block mb-3">{{ __('Get Started') }}</button>
+                <button onclick="loginThroughBackend()" class="btn btn-primary btn-round btn-lg btn-block mb-3">{{ __('Sign In') }}</button>
+                <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                 <!--<div class="pull-left">
                     <h6>
                     <a href="{{ route('register') }}" class="link footer-link">{{ __('Create Account') }}</a>
@@ -85,7 +87,66 @@
 @push('js')
     <script>
         $(document).ready(function() {
-        demo.checkFullPageBackgroundImage();
+            demo.checkFullPageBackgroundImage();
         });
+
+        function loginThroughBackend() {
+            
+            // var formData = document.getElementById("loginForm");
+            var objData = new FormData();
+            objData.append('username', $('#email').val());
+            objData.append('password', $('#password').val());
+
+
+            console.log("============LOGIN");
+            console.log($('#email').val());
+            console.log($('#token').val());
+            // console.log(objData);
+			// console.log($("#password").val());
+
+            console.log("smpe sini 1");
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('#token').val()
+                }
+            });
+
+            console.log("smpe sini 2");
+            console.log('{{ route('login1') }}');
+            
+            event.preventDefault();
+
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('login1') }}',
+                data: objData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var data=$.parseJSON(data);
+                    console.log("THIS IS FROM AJAX : ");
+					console.log(data);
+                    console.log("================");
+
+                    if(data.statusCode!=200) {
+                        $("#username").val('');
+						$("#password").val('');
+                        console.log("===========LOGIN ERROR");
+                        console.log(data.message);
+                    } else {
+                        window.location.href = '{{ route('home') }}';
+                    }
+                }
+            }).fail(function (msg) {
+                console.log("===== LOG FROM ERROR");
+                console.log(msg);
+            });
+
+
+
+            // finish function login through backend
+        }
+
     </script>
 @endpush

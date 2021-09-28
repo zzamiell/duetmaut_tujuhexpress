@@ -113,9 +113,10 @@ class OrdersController extends Controller
      */
     public function create()
     {
+        $data['account'] = DB::table('tb_clients')->select('id', 'account_name')->get();
 
 
-        return view('orders.create');
+        return view('orders.create', $data);
     }
 
 
@@ -123,7 +124,10 @@ class OrdersController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->awb);
+        // dd($request->all());
+        $ship = explode('-', $request->get('shipper_postal_code'));
+        $recipt = explode('-', $request->get('recipient_postal_code'));
+        // dd($ship);
         $insert =  orders::create([
             'awb' => $request->awb,
             // 'date_requested' => $request->date_requested,
@@ -134,13 +138,13 @@ class OrdersController extends Controller
             'shipper_name' => $request->shipper_name,
             'shipper_phone' => $request->shipper_phone,
             'shipper_address' => $request->shipper_address,
-            'shipper_postal_code' => $request->shipper_postal_code,
+            'shipper_postal_code' => $ship[0],
             'shipper_area' => $request->shipper_area,
             'shipper_district' => $request->shipper_district,
             'recipient_name' => $request->recipient_name,
             'recipient_phone' => $request->recipient_phone,
             'recipient_address' => $request->recipient_address,
-            'recipient_postal_code' => $request->recipient_postal_code,
+            'recipient_postal_code' => $recipt[0],
             'recipient_area' => $request->recipient_area,
             'recipient_district' => $request->recipient_district,
             'weight' => $request->weight,
@@ -301,10 +305,13 @@ class OrdersController extends Controller
     }
 
     //export
-    public function export($page)
+    public function export($page, $tgl_awal, $tgl_akhir, $status)
     {
+        $tanggal_awal = $tgl_awal !== null ? $tgl_awal : date('Y-m-d');
+        $tanggal_akhir = $tgl_akhir !== null ? $tgl_akhir : date('Y-m-d');
+
         ini_set('memory_limit', '-1');
-        return Excel::download(new OrdersExport($page), 'orders.xlsx');
+        return Excel::download(new OrdersExport($page, $tanggal_awal, $tanggal_akhir, $status), 'orders.xlsx');
         return Redirect()->route('orders.index')->with('success', 'Order has been downloaded!');
     }
 
@@ -342,5 +349,78 @@ class OrdersController extends Controller
 
 
         return redirect()->route('orders.index')->with('success', 'Mass Order Uploaded');
+    }
+
+    public function service_order_by_account($id)
+    {
+        $service = DB::table('tb_pricing')
+            ->select('service_order')
+            ->where('id_client', $id)
+            ->groupBy('service_order')
+            ->get();
+        // dd($service);
+        return json_encode($service);
+    }
+
+    public function load_postal_code($service, $id)
+    {
+        $zip = DB::table('tb_pricing')
+            ->select('tb_pricing.id', 'id_area', 'postal_code')
+            ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
+            ->where('id_client', $id)
+            ->where('service_order', $service)
+            ->get();
+        // dd($zip);
+        return json_encode($zip);
+    }
+
+    public function shipper_detail($postalcode)
+    {
+        $detail = DB::table('reff_area')
+            ->select('area_name', 'district_name')
+            ->where('postal_code', $postalcode)
+            ->get();
+
+        return json_encode($detail);
+    }
+
+    public function recipt_detail($postalcode)
+    {
+        $detail = DB::table('reff_area')
+            ->select('id', 'area_name', 'district_name')
+            ->where('postal_code', $postalcode)
+            ->get();
+
+        return json_encode($detail);
+    }
+
+    public function is_cod($idclient)
+    {
+        $cod_fee = DB::table('tb_clients')
+            ->select('cod_fee')
+            ->where('id', $idclient)
+            ->first();
+        // dd($cod_fee);
+        return json_encode($cod_fee);
+    }
+
+    public function is_insured($idclient)
+    {
+        $insurance_fee = DB::table('tb_clients')
+            ->select('insurance_fee')
+            ->where('id', $idclient)
+            ->first();
+        // dd($cod_fee);
+        return json_encode($insurance_fee);
+    }
+
+    public function ambil_pricing($idpricing)
+    {
+        $pricing = DB::table('tb_pricing')
+            ->select('pricing')
+            ->where('id', $idpricing)
+            ->first();
+        // dd($cod_fee);
+        return json_encode($pricing);
     }
 }

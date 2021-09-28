@@ -26,7 +26,8 @@
                 Mass Order Update
               </button>
                   {{-- <div> --}}
-                <a class="btn btn-success" href="{{ route('orders.export', $orders->currentPage())}}">Export</a>
+                {{-- <a class="btn btn-success" href="{{ route('orders.export', $orders->currentPage())}}">Export</a> --}}
+                <a class="btn btn-success" href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}">Export</a>
               {{-- </div> --}}
 
                <!-- Button trigger modal -->

@@ -70,14 +70,14 @@
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>Cod fee</label>
-                                    <input type="text" class="form-control" value="{{$clients->cod_fee}}" readonly>
+                                    <input type="text" class="form-control" value="{{$clients->cod_fee}} %" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>Insurance fee</label>
-                                    <input type="text" class="form-control" value="{{$clients->insurance_fee}}"
+                                    <input type="text" class="form-control" value="{{$clients->insurance_fee}} %"
                                         readonly>
                                 </div>
                             </div>
@@ -96,12 +96,33 @@
                     class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</button> --}}
                     <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
                     <a style="float: right" class="btn btn-success mt-3" href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">Export</a>
-                    <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a>
+                    {{-- <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a> --}}
                     <a type="button" data-toggle="modal" data-target="#uploadModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Upload Data Pricing</a>
                 <div class="card-header">
                     <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
                 </div>
                 <div class="card-body">
+                    <div class="card-body">
+                        <!-- Filter Section -->
+                        <form action="{{Request::fullUrl()}}" method="GET" enctype="multipart/form-data">
+                          <div class="row">
+                                <div class="col-md-9">
+                                  {{ csrf_field() }}
+                                </div>
+
+                                <div class="col-md-3">
+                                  <select name="service_order" onchange="this.form.submit()" class="form-control" id="">
+                                  {{-- <optgroup label="Pilih service order"> --}}
+                                      <option value="">==Pilih service order===</option>
+                                      @foreach ($breadcumb as $key => $item)
+                                      <option value="{{$item->service_order}}">{{$item->service_order}}</option>
+                                      @endforeach
+                                  {{-- </optgroup> --}}
+                                  </select>
+                                </div>
+                              </div>
+                          </form>
+                        </div>
                     {{-- <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             @foreach ($breadcumb as $key => $item )
@@ -297,7 +318,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
             </div>
-                
+
             <div class="modal-body">
                     {{-- isi --}}
                     <div class="input-group">
@@ -307,7 +328,7 @@
                         </div>
                         <form class="form-class" id="formupload">
                             <input
-                                        type="file" 
+                                        type="file"
                                         name="import_file" id="datapricingid">
                             <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                                     </div>
@@ -324,7 +345,7 @@
  </div>
 
 
- 
+
 
 <script src="{{ asset('sweetalert/sweetalert.min.js') }}"></script>
 
@@ -394,7 +415,7 @@ function processImport(){
                 console.log("success upload");
                 console.log(parse.message);
                 swal("", parse.message, "success");
-                $('#uploadModal').modal('toggle'); 
+                $('#uploadModal').modal('toggle');
             } else {
                 console.log("error upload");
                 console.log(parse.message);
@@ -405,7 +426,7 @@ function processImport(){
     });
 
 
-    
+
 }
 </script>
 
