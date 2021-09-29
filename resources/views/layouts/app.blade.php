@@ -9,7 +9,7 @@
   <!-- Extra details for Live View on GitHub Pages -->
   <!-- Canonical SEO -->
   {{-- <link rel="canonical" href="https://www.creative-tim.com/product/now-ui-dashboard-pro" /> --}}
-
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!--  Social tags      -->
   <meta name="keywords" content="creative tim, html dashboard, html css dashboard, web dashboard, bootstrap 4 dashboard, bootstrap 4, css3 dashboard, bootstrap 4 admin, now ui dashboard bootstrap 4 dashboard, frontend, responsive bootstrap 4 dashboard, now ui design, now ui dashboard bootstrap 4 dashboard">

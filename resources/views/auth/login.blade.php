@@ -26,8 +26,8 @@
             </div>
         </div>
         <div class="col-md-4 ml-auto mr-auto">
-            <form   id="loginForm" novalidate="novalidate">
-                @csrf
+            <form id="loginForm" novalidate="novalidate">
+            {{ csrf_field() }}
             <div class="card card-login card-plain">
                 <div class="card-header ">
                     <div class="p-3 mb-2 bg-gradient-primary text-white">
@@ -63,9 +63,10 @@
                     </span>
                 @endif
                 </div>
+                </form>
                 <div class="card-footer ">
                 <button onclick="loginThroughBackend()" class="btn btn-primary btn-round btn-lg btn-block mb-3">{{ __('Sign In') }}</button>
-                <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                
                 <!--<div class="pull-left">
                     <h6>
                     <a href="{{ route('register') }}" class="link footer-link">{{ __('Create Account') }}</a>
@@ -78,19 +79,22 @@
                 </div>
                 </div>
             </div>
-            </form>
+            
         </div>
         </div>
     </div>
+
+    
 @endsection
-
 @push('js')
-    <script>
-        $(document).ready(function() {
-            demo.checkFullPageBackgroundImage();
-        });
+<script type="text/javascript">
+        // $(document).ready(function() {
+        //     demo.checkFullPageBackgroundImage();
+        // });
 
+        
         function loginThroughBackend() {
+            event.preventDefault();
             
             // var formData = document.getElementById("loginForm");
             var objData = new FormData();
@@ -108,14 +112,14 @@
 
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': $('#token').val()
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
             console.log("smpe sini 2");
             console.log('{{ route('login1') }}');
             
-            event.preventDefault();
+            
 
             $.ajax({
                 type: 'POST',
@@ -135,17 +139,33 @@
                         console.log("===========LOGIN ERROR");
                         console.log(data.message);
                     } else {
-                        window.location.href = '{{ route('home') }}';
+
+                        var objData2 = new FormData();
+                        objData2.append('email', $('#email').val());
+                        objData2.append('password', $('#password').val());
+
+                        // login laravel
+                        $.ajax({
+                        type: 'POST',
+                        url: '{{ route('login') }}',
+                        data: objData2,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            window.location.href = '{{ route('home') }}';
+                        }
+                    }).fail(function (msg) {
+                        console.log("===== LOG FROM ERROR");
+                        console.log(msg);
+                    });
+
+                        // window.location.href = '{{ route('home') }}';
                     }
                 }
             }).fail(function (msg) {
                 console.log("===== LOG FROM ERROR");
                 console.log(msg);
             });
-
-
-
-            // finish function login through backend
         }
 
     </script>
