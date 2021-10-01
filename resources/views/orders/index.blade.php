@@ -15,25 +15,32 @@
             <h4 class="card-title"> Order List </h4>
 
             <div class="card">
-              <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
 
-              <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
-                Import Order
-              </button>
-              <!-- Button trigger modal -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal">
-                Mass Order Update
-              </button>
-                  {{-- <div> --}}
-                {{-- <a class="btn btn-success" href="{{ route('orders.export', $orders->currentPage())}}">Export</a> --}}
-                <a class="btn btn-success" href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}">Export</a>
-              {{-- </div> --}}
+              @if(session('access_menu'))
+                @foreach(session('access_menu') as $menu)
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-create')
+                      <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
+                    @endif
+                    
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-import')
+                      <!-- Button trigger modal -->
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
+                        Import Order
+                      </button>
+                    @endif
 
-               <!-- Button trigger modal -->
-              <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">
-                Filter
-              </button> -->
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-update')
+                      <!-- Button trigger modal -->
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal">
+                        Mass Order Update
+                      </button>
+                    @endif
+                    
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-export')
+                      <a class="btn btn-success" href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}">Export</a>
+                    @endif
+                @endforeach
+              @endif
 
               <!-- <a href="javascript:void(0)" onclick="openFilterModal()" class="btn btn-danger waves-effect waves-light"><i class="fa fa-file-pdf-o">Filter 2</i> </a> -->
               <div class="card-body">
