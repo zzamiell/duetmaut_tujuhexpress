@@ -25,34 +25,37 @@
         </a>
       </li>-->
 
+       @if(session('access_menu'))
+        @foreach(session('access_menu') as $menu)
+          @if($menu['tb_menu']['menu_function_id'] == 1 && $menu['tb_menu']['menu_name'] == 'orders')
+            <li class = "@if ($activePage == 'orders') active @endif">
+              <a href="{{ route('orders.index') }}">
+                <i class="now-ui-icons shopping_delivery-fast"></i>
+                <p>{{ __('Orders') }}</p>
+              </a>
+            </li>
+          @endif
 
-      <li class = "@if ($activePage == 'Orders') active @endif">
-        <a href="{{ route('orders.index') }}">
-          <i class="now-ui-icons shopping_delivery-fast"></i>
-          <p>{{ __('Orders') }}</p>
-        </a>
-      </li>
+          @if($menu['tb_menu']['menu_function_id'] == 1 && $menu['tb_menu']['menu_name'] == 'users')
+          <li class="@if ($activePage == 'users') active @endif">
+            <a href="{{ route('user.index') }}">
+              <i class="now-ui-icons users_single-02"></i>
+              <p> {{ __("Users") }} </p>
+            </a>
+          </li>
+          @endif
 
-      <li class="@if ($activePage == 'users') active @endif">
-        <a href="{{ route('user.index') }}">
-          <i class="now-ui-icons users_single-02"></i>
-          <p> {{ __("Users") }} </p>
-        </a>
-      </li>
+          @if($menu['tb_menu']['menu_function_id'] == 1 && $menu['tb_menu']['menu_name'] == 'clients')
+          <li class="@if ($activePage == 'clients') active @endif">
+            <a href="{{ route('clients.index') }}">
+              <i class="now-ui-icons business_briefcase-24"></i>
+              <p> {{ __("Clients") }} </p>
+            </a>
+          </li>
+          @endif
 
-      <li class="@if ($activePage == 'clients') active @endif">
-        <a href="{{ route('clients.index') }}">
-          <i class="now-ui-icons business_briefcase-24"></i>
-          <p> {{ __("Clients") }} </p>
-        </a>
-      </li>
-      <hr class="dashed">
-      <li class="@if ($activePage == 'Menu Management') active @endif">
-        <a href="{{ route('menu.index') }}">
-          <i class="now-ui-icons loader_gear"></i>
-          <p> {{ __("Menu Management") }} </p>
-        </a>
-      </li>
+        @endforeach
+      @endif
 
       {{-- {{ dd($activePage) }} --}}
       <!--<li>

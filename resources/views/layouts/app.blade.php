@@ -9,7 +9,7 @@
   <!-- Extra details for Live View on GitHub Pages -->
   <!-- Canonical SEO -->
   {{-- <link rel="canonical" href="https://www.creative-tim.com/product/now-ui-dashboard-pro" /> --}}
-
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <!--  Social tags      -->
   <meta name="keywords" content="creative tim, html dashboard, html css dashboard, web dashboard, bootstrap 4 dashboard, bootstrap 4, css3 dashboard, bootstrap 4 admin, now ui dashboard bootstrap 4 dashboard, frontend, responsive bootstrap 4 dashboard, now ui design, now ui dashboard bootstrap 4 dashboard">
@@ -51,9 +51,7 @@
   <!-- CSS Files -->
   <link href="{{ asset('assets') }}/css/bootstrap.min.css" rel="stylesheet" />
   <link href="{{ asset('assets') }}/css/now-ui-dashboard.css?v=1.3.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="{{ asset('assets') }}/demo/demo.css" rel="stylesheet" />
-
+  
   <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}">
 
 </head>

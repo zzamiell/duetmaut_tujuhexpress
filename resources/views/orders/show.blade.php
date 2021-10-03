@@ -67,10 +67,16 @@
                                         {{ $created_at }} <br>
 
                                         @endforeach
-                                        <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                          Edit Order
-                                        </button>
+                                        @if(session('access_menu'))
+                                          @foreach(session('access_menu') as $menu)
+                                            @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-update')
+                                              <!-- Button trigger modal -->
+                                              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                                Edit Order
+                                              </button>
+                                            @endif
+                                          @endforeach
+                                        @endif
                                  </div>
 
 
