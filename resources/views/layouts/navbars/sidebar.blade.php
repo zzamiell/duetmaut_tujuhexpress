@@ -1,3 +1,9 @@
+<style>
+    hr.dashed {
+    border-top: 2px dashed rgb(255, 255, 255);
+}
+</style>
+
 <div class="sidebar" data-color="orange">
   <!--
     Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red | yellow"
@@ -38,6 +44,13 @@
         <a href="{{ route('clients.index') }}">
           <i class="now-ui-icons business_briefcase-24"></i>
           <p> {{ __("Clients") }} </p>
+        </a>
+      </li>
+      <hr class="dashed">
+      <li class="@if ($activePage == 'Menu Management') active @endif">
+        <a href="{{ route('menu.index') }}">
+          <i class="now-ui-icons loader_gear"></i>
+          <p> {{ __("Menu Management") }} </p>
         </a>
       </li>
 

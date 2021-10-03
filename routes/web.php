@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MenuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,8 +13,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
 
 Auth::routes();
 
@@ -90,4 +89,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('insert_pricing', 'ClientsController@insert_pricing')->name('insert_pricing');
     Route::get('pricing/index/export/{page}/{id}', 'ClientsController@exportPricing')->name('pricing.export');
     Route::post('importExcelTbPricing', ['as' => 'importExcelTbPricing', 'uses' => 'ClientsController@importExcel']);
+
+
+    // Menu managment
+    Route::get('/menu/index', 'MenuController@index')->name('menu.index');
 });
