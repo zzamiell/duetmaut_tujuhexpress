@@ -6,6 +6,16 @@
 ])
 
 @section('content')
+<style>
+     body {
+        background-image: url('bg.jpg');
+        background-size: 100%;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: top;
+        background-color: #ffffff;
+    }
+</style>
     <div class="content">
         <div class="container">
         <div class="col-md-12 ml-auto mr-auto">
@@ -43,7 +53,7 @@
                     </span>
                     <input class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" placeholder="{{ __('Email') }}" type="email" name="email" id="email" required autofocus>
                 </div>
-                
+
                 @if ($errors->has('email'))
                     <span class="invalid-feedback" style="display: block;" role="alert">
                     <strong>{{ $errors->first('email') }}</strong>
@@ -66,7 +76,7 @@
                 </form>
                 <div class="card-footer ">
                 <button onclick="loginThroughBackend()" class="btn btn-primary btn-round btn-lg btn-block mb-3">{{ __('Sign In') }}</button>
-                
+
                 <!--<div class="pull-left">
                     <h6>
                     <a href="{{ route('register') }}" class="link footer-link">{{ __('Create Account') }}</a>
@@ -75,16 +85,16 @@
                 <div class="pull-right">
                     <h6>
                     <a href="{{ route('password.request') }}" class="link footer-link">{{ __('Forgot Password?') }}</a>
-                    </h6>                
+                    </h6>
                 </div>
                 </div>
             </div>
-            
+
         </div>
         </div>
     </div>
 
-    
+
 @endsection
 @push('js')
 <script type="text/javascript">
@@ -92,10 +102,10 @@
         //     demo.checkFullPageBackgroundImage();
         // });
 
-        
+
         function loginThroughBackend() {
             event.preventDefault();
-            
+
             // var formData = document.getElementById("loginForm");
             var objData = new FormData();
             objData.append('username', $('#email').val());
@@ -118,8 +128,8 @@
 
             console.log("smpe sini 2");
             console.log('{{ route('login1') }}');
-            
-            
+
+
 
             $.ajax({
                 type: 'POST',

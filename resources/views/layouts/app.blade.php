@@ -20,7 +20,7 @@
   <meta itemprop="name" content="Now Ui Dashboard PRO by Creative Tim">
   <meta itemprop="description" content="Now UI Dashboard PRO is a beautiful Bootstrap 4 admin dashboard with a large number of components, designed to look beautiful, clean and organized. If you are looking for a tool to manage dates about your business, this dashboard is the thing for you.">
 
-  {{-- <meta itemprop="image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"> --}}
+  <meta itemprop="image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg">
 
 
   <!-- Twitter Card data -->
@@ -30,7 +30,7 @@
 
   <meta name="twitter:description" content="Now UI Dashboard PRO is a beautiful Bootstrap 4 admin dashboard with a large number of components, designed to look beautiful, clean and organized. If you are looking for a tool to manage dates about your business, this dashboard is the thing for you.">
   <meta name="twitter:creator" content="@creativetim">
-  {{-- <meta name="twitter:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"> --}}
+  <meta name="twitter:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg">
 
 
   <!-- Open Graph data -->
@@ -38,7 +38,7 @@
   <meta property="og:title" content="Now Ui Dashboard PRO by Creative Tim" />
   <meta property="og:type" content="article" />
   {{-- <meta property="og:url" content="http://demos.creative-tim.com/now-ui-dashboard-pro/examples/dashboard.html" /> --}}
-  {{-- <meta property="og:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"/> --}}
+  <meta property="og:image" content="https://s3.amazonaws.com/creativetim_bucket/products/72/opt_nudp_thumbnail.jpg"/>
   <meta property="og:description" content="Now UI Dashboard PRO is a beautiful Bootstrap 4 admin dashboard with a large number of components, designed to look beautiful, clean and organized. If you are looking for a tool to manage dates about your business, this dashboard is the thing for you." />
   <meta property="og:site_name" content="Creative Tim" />
   <title>
@@ -51,7 +51,7 @@
   <!-- CSS Files -->
   <link href="{{ asset('assets') }}/css/bootstrap.min.css" rel="stylesheet" />
   <link href="{{ asset('assets') }}/css/now-ui-dashboard.css?v=1.3.0" rel="stylesheet" />
-  
+
   <link rel="stylesheet" href="{{ asset('assets/css/dataTables.min.css') }}">
 
 </head>
@@ -72,7 +72,7 @@
 
   <script src="{{ asset('assets') }}/js/dataTables.min.js"></script>
   @yield('scripts')
-  <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+  {{-- <script src="{{ asset('assets') }}/js/plugins/perfect-scrollbar.jquery.min.js"></script> --}}
 
 
 
@@ -82,9 +82,9 @@
   <!-- Chart JS -->
   <script src="{{ asset('assets') }}/js/plugins/chartjs.min.js"></script>
   <!--  Notifications Plugin    -->
-  {{-- <script src="{{ asset('assets') }}/js/plugins/bootstrap-notify.js"></script> --}}
+  <script src="{{ asset('assets') }}/js/plugins/bootstrap-notify.js"></script>
   <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="{{ asset('assets') }}/js/now-ui-dashboard.min.js?v=1.3.0" type="text/javascript"></script>
+  {{-- <script src="{{ asset('assets') }}/js/now-ui-dashboard.min.js?v=1.3.0" type="text/javascript"></script> --}}
   <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
   <script src="{{ asset('assets') }}/demo/demo.js"></script>
 
