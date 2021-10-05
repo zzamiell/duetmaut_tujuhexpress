@@ -18,13 +18,7 @@
   </div>
   <div class="sidebar-wrapper" id="sidebar-wrapper">
     <ul class="nav">
-      <!--<li class="@if ($activePage == 'home') active @endif">
-        <a href="{{ route('home') }}">
-          <i class="now-ui-icons design_app"></i>
-          <p>{{ __('Dashboard') }}</p>
-        </a>
-      </li>-->
-      {{-- {{ dd(session('token')) }} --}}
+
        @if(session('access_menu'))
         @foreach(session('access_menu') as $menu)
           @if($menu['tb_menu']['menu_function_id'] == 1 && $menu['tb_menu']['menu_name'] == 'orders')
@@ -59,6 +53,15 @@
             <a href="{{ route('role.index') }}">
               <i class="now-ui-icons ui-1_settings-gear-63"></i>
               <p> {{ __("User-role") }} </p>
+            </a>
+          </li>
+          @endif
+
+          @if($menu['tb_menu']['menu_function_id'] == 1 && $menu['tb_menu']['menu_name'] == 'menu')
+          <li class="@if ($activePage == 'menu') active @endif">
+            <a href="{{ route('menu.index') }}">
+              <i class="now-ui-icons design_bullet-list-67"></i>
+              <p> {{ __("Menu") }} </p>
             </a>
           </li>
           @endif
