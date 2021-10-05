@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +90,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('pricing/index/export/{page}/{id}', 'ClientsController@exportPricing')->name('pricing.export');
     Route::post('importExcelTbPricing', ['as' => 'importExcelTbPricing', 'uses' => 'ClientsController@importExcel']);
 
+    // Role Management
+    Route::get('/role/user-role', 'RoleController@index')->name('role.index');
+    Route::post('/role/add-user-role', 'RoleController@insert_role')->name('role.store');
+    Route::post('/role/delete-user-role/{id}', 'RoleController@delete_role')->name('role.delete');
+    Route::post('/role/update-user-role', 'RoleController@update_role')->name('role.update');
 
     // Menu managment
     Route::get('/menu/index', 'MenuController@index')->name('menu.index');
