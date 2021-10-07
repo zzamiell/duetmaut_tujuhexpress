@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AccessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,4 +102,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/menu/store', 'MenuController@store')->name('menu.store');
     Route::post('/menu/update', 'MenuController@update')->name('menu.update');
     Route::post('/menu/delete-menu/{id}', 'MenuController@delete')->name('menu.delete');
+
+    // Akses Menu User Role
+    Route::get('/access/{id}', 'AccessController@index')->name('access.index');
+    Route::post('/access/store', 'AccessController@store')->name('access.store');
+    Route::post('/access/delete/{id}', 'AccessController@delete')->name('access.delete');
 });

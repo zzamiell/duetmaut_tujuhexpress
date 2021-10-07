@@ -42,9 +42,13 @@
                                 <td>{{$key+1}}</td>
                                 <td>{{$item->user_role_name}}</td>
                                 <td style="vertical-align: middle;">
-                                    <div class="btn-group" role="group" aria-label="Basic example">
                                         @if(session('access_menu'))
                                         @foreach(session('access_menu') as $key => $menu)
+                                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-access-view')
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            <button type="button" onclick="location.href='{{route('access.index', $item->id)}}'" class="btn btn-warning"><i
+                                                class="now-ui-icons objects_key-25"></i></button>
+                                        @endif
                                             @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'userrole-update')
                                     <a href="#" data-toggle="modal" data-target="#exampleModal{{$item->id}}" type="button" class="btn"><i
                                         class="now-ui-icons ui-1_zoom-bold"></i></a>

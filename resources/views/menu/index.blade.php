@@ -120,7 +120,7 @@
                                                         <div class="form-group">
                                                             <label>Menu parent</label>
                                                             <select name="parent" class="form-control">
-                                                                <option value="">Tentukan menu dari submenu</option>
+                                                                <option value="0">Tentukan menu dari submenu</option>
                                                                 @foreach ($submenu as $sub)
                                                                 <option value="{{$sub->id}}" @if ($sub->id == $item->menu_parent_id) selected @endif>{{$sub->menu_name}}
                                                                 </option>
@@ -131,7 +131,7 @@
                                                         <div class="form-group">
                                                             <label>Menu function</label>
                                                             <select name="menu_functuin" class="form-control">
-                                                                <option value="">Pilih fungsi menu</option>
+                                                                <option value="0">Pilih fungsi menu</option>
                                                                 @foreach ($reff as $ref)
                                                                 <option value="{{$ref->id}}" @if ($ref->id == $item->menu_function_id) selected @endif>{{$ref->function_name}}
                                                                 </option>
@@ -196,7 +196,7 @@
                             <div class="form-group">
                                 <label>Menu parent</label>
                                 <select name="parent" class="form-control">
-                                    <option value="">Tentukan menu dari submenu</option>
+                                    <option value="0">Tentukan menu dari submenu</option>
                                     @foreach ($submenu as $sub)
                                     <option value="{{$sub->id}}">{{$sub->menu_name}}</option>
                                     @endforeach
@@ -206,7 +206,7 @@
                             <div class="form-group">
                                 <label>Menu function</label>
                                 <select name="menu_functuin" class="form-control">
-                                    <option value="">Pilih fungsi menu</option>
+                                    <option value="0">Pilih fungsi menu</option>
                                     @foreach ($reff as $ref)
                                     <option value="{{$ref->id}}">{{$ref->function_name}}</option>
                                     @endforeach
