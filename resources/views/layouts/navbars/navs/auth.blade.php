@@ -54,7 +54,7 @@
           <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="now-ui-icons users_single-02"></i>
             <p>
-              Hello {{session('user_real_name')}} ({{session('user_role_name')}})
+              {{session('user_real_name')}} ({{session('user_role_name')}})
               <span class="d-lg-none d-md-block">{{ __("Account") }}</span>
             </p>
           </a>
