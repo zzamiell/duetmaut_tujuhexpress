@@ -98,4 +98,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Menu managment
     Route::get('/menu/index', 'MenuController@index')->name('menu.index');
+    Route::post('/menu/store', 'MenuController@store')->name('menu.store');
+    Route::post('/menu/update', 'MenuController@update')->name('menu.update');
+    Route::post('/menu/delete-menu/{id}', 'MenuController@delete')->name('menu.delete');
 });

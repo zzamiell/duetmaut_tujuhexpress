@@ -18,7 +18,6 @@
   </div>
   <div class="sidebar-wrapper" id="sidebar-wrapper">
     <ul class="nav">
-
        @if(session('access_menu'))
         @foreach(session('access_menu') as $menu)
           @if($menu['tb_menu']['menu_function_id'] == 1 && $menu['tb_menu']['menu_name'] == 'orders')

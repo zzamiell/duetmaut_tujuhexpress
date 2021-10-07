@@ -20,6 +20,9 @@ class MenuController extends Controller
     public function index(Request $request)
     {
         try {
+            $data['submenu'] = DB::table('tb_menu')->select('id', 'menu_name')->where('menu_function_id', 1)->get();
+            $data['reff'] = DB::table('reff_menu_function')->get();
+
             if ($request->get('cari')) {
                 $query = $request->get('cari');
 
@@ -44,69 +47,63 @@ class MenuController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        try {
+
+            $data = array(
+                'menu_name' => $request->get('menu_name'),
+                'url' => $request->get('url'),
+                'icon' => $request->get('icon'),
+                'menu_parent_id' => $request->get('parent'),
+                'menu_function_id' => $request->get('menu_functuin'),
+            );
+
+            $insert = DB::table('tb_menu')->insert($data);
+
+            if ($insert) {
+                return redirect()->back()->with('data', 'Berhasil menambah menu');
+            } else {
+                return redirect()->back()->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+            }
+
+            return view('user_role.index', $data);
+        } catch (\Exception $e) {
+            dd($e);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function update(Request $request)
     {
-        //
+        try {
+            $id = (int) $request->get('id');
+
+            $data = array(
+                'menu_name' => $request->get('menu_name'),
+                'url' => $request->get('url'),
+                'icon' => $request->get('icon'),
+                'menu_parent_id' => $request->get('parent'),
+                'menu_function_id' => $request->get('menu_functuin'),
+            );
+
+            $update = DB::table('tb_menu')->where('id', $id)->update($data);
+
+            if ($update) {
+                return redirect()->back()->with('update', 'Berhasil mengubah menu');
+            } else {
+                return redirect()->back()->with('fail', 'Terjadi Kesalahan Sistem, Silahkan Coba Lagi');
+            }
+        } catch (\Exception $e) {
+            dd($e);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function delete(Request $request, $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        try {
+            $hapus = DB::table('tb_menu')->where('id', $id)->delete();
+        } catch (\Exception $e) {
+            dd($e);
+        }
     }
 }
