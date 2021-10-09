@@ -15,6 +15,7 @@ use Haruncpi\LaravelIdGenerator\IdGenerator;
 use App\OrdersLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Session;
 
 class OrdersController extends Controller
 {
@@ -28,27 +29,60 @@ class OrdersController extends Controller
         // $orders = orders::all();
         // $orders = \DB::select("SELECT * FROM orders");
         // dd($request->all());
+
+        // dd(Session::get('client_account_name'));
+        // dd(Session::get('user_role_id') == 1);
         $tanggal_awal = date('Y-m-d', strtotime('-3 months'));
         $tanggal_akhir = date('Y-m-d');
 
-        if ($request->get('cari')) {
-            $query = $request->get('cari');
-            $orders = DB::table('orders')
-                ->where('awb', 'LIKE', '%' . $query . '%')
-                ->paginate(50);
-            return view('orders.index', compact('orders', 'orders'));
+        if(Session::get('user_role_id') == 1) {
+            if ($request->get('cari')) {
+                $query = $request->get('cari');
+                $orders = DB::table('orders')
+                    ->where([
+                        ['awb', 'LIKE', '%' . $query . '%'],
+                        ['account_name', '=', Session::get('client_account_name')]
+                    ])
+                    ->paginate(50);
+                return view('orders.index', compact('orders', 'orders'));
+            } else {
+                // $orders = DB::table('orders')->paginate(10);
+                $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
+                
+                $orders = DB::table('orders')
+                    ->where([
+                        ['date_requested', '>=', $tiga_bulan],
+                        ['account_name', '=', Session::get('client_account_name')]
+                    ])
+                    ->orderBy('id', 'DESC')
+                    ->paginate(50);
+    
+                $data = compact('orders', 'orders');
+                $data['tanggal_awal'] = $tanggal_awal;
+                $data['tanggal_akhir'] = $tanggal_akhir;
+                // dd($data);
+                return view('orders.index', $data);
+            }
         } else {
-            // $orders = DB::table('orders')->paginate(10);
-            $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
-            $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
-                ->orderBy('id', 'DESC')
-                ->paginate(50);
-
-            $data = compact('orders', 'orders');
-            $data['tanggal_awal'] = $tanggal_awal;
-            $data['tanggal_akhir'] = $tanggal_akhir;
-            // dd($data);
-            return view('orders.index', $data);
+            if ($request->get('cari')) {
+                $query = $request->get('cari');
+                $orders = DB::table('orders')
+                    ->where('awb', 'LIKE', '%' . $query . '%')
+                    ->paginate(50);
+                return view('orders.index', compact('orders', 'orders'));
+            } else {
+                // $orders = DB::table('orders')->paginate(10);
+                $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
+                $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
+                    ->orderBy('id', 'DESC')
+                    ->paginate(50);
+    
+                $data = compact('orders', 'orders');
+                $data['tanggal_awal'] = $tanggal_awal;
+                $data['tanggal_akhir'] = $tanggal_akhir;
+                // dd($data);
+                return view('orders.index', $data);
+            }
         }
     }
 
@@ -60,44 +94,84 @@ class OrdersController extends Controller
      */
     public function filter(Request $request)
     {
-        // dd($request->tanggal_awal);
-
+        
         $tanggal_awal = $request->tanggal_awal !== null ? $request->tanggal_awal : date('Y-m-d', strtotime('-3 months'));
         $tanggal_akhir = $request->tanggal_akhir !== null ? $request->tanggal_akhir : date('Y-m-d');
 
-        // dd($tanggal_akhir);
-
-        if ($tanggal_awal !== null && $tanggal_akhir !== null) {
-            if ($request->order_status != "all") {
-                // dd($request->tanggal_awal);
+        if(Session::get('user_role_id') == 1) {
+            if ($tanggal_awal !== null && $tanggal_akhir !== null) {
+                if ($request->order_status != "all") {
+                    // dd($request->tanggal_awal);
+                    $orders = DB::table('orders')
+                        ->where([
+                            ['order_status' => $request->order_status],
+                            ['account_name', '=', Session::get('client_account_name')]
+                        ])
+                        ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
+                        ->orderBy('id', 'DESC')
+                        ->paginate(10);
+                        
+                } else {
+                    // dd($request->tanggal_akhir);
+                    // $query = "
+                    // SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                    //     . $request->tanggal_akhir . " 23:59:59'";
+                    $orders = DB::table('orders')
+                        ->where('account_name', '=', Session::get('client_account_name'))
+                        ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
+                        ->orderBy('id', 'DESC')
+                        ->paginate(10);
+                };
+            } else {
+                // $orders = DB::table('orders')->paginate(10);
+                $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
                 $orders = DB::table('orders')
                     ->where([
-                        'order_status' => $request->order_status
+                        ['date_requested', '>=', $tiga_bulan],
+                        ['account_name', '=', Session::get('client_account_name')]
                     ])
-                    ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
+                    ->orderBy('id', 'DESC')
                     ->paginate(10);
-                // $query = "
-                // SELECT * FROM orders WHERE order_status = '" . $request->order_status
-                //     . "' AND date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
-                //     . $request->tanggal_akhir . " 23:59:59'";
-            } else {
-                // dd($request->tanggal_akhir);
-                // $query = "
-                // SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
-                //     . $request->tanggal_akhir . " 23:59:59'";
-                $orders = DB::table('orders')
-                    ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
-                    ->paginate(10);
-            };
+    
+                // dd($orders);
+            }
         } else {
-            // $orders = DB::table('orders')->paginate(10);
-            $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
-            $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
-                ->orderBy('id', 'DESC')
-                ->paginate(10);
-
-            // dd($orders);
+            if ($tanggal_awal !== null && $tanggal_akhir !== null) {
+                if ($request->order_status != "all") {
+                    // dd($request->tanggal_awal);
+                    $orders = DB::table('orders')
+                        ->where([
+                            'order_status' => $request->order_status,
+                        ])
+                        ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
+                        ->orderBy('id', 'DESC')
+                        ->paginate(10);
+                    // $query = "
+                    // SELECT * FROM orders WHERE order_status = '" . $request->order_status
+                    //     . "' AND date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                    //     . $request->tanggal_akhir . " 23:59:59'";
+                } else {
+                    // dd($request->tanggal_akhir);
+                    // $query = "
+                    // SELECT * FROM orders WHERE date_requested BETWEEN '" . $request->tanggal_awal . " 00:00:00' AND '"
+                    //     . $request->tanggal_akhir . " 23:59:59'";
+                    $orders = DB::table('orders')
+                        ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
+                        ->orderBy('id', 'DESC')
+                        ->paginate(10);
+                };
+            } else {
+                // $orders = DB::table('orders')->paginate(10);
+                $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
+                $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
+                    ->orderBy('id', 'DESC')
+                    ->paginate(10);
+    
+                // dd($orders);
+            }
         }
+
+        
         $data = compact('orders', 'orders');
         $data['tanggal_awal'] = $tanggal_awal;
         $data['tanggal_akhir'] = $tanggal_akhir;
@@ -115,6 +189,7 @@ class OrdersController extends Controller
     {
         $data['account'] = DB::table('tb_clients')->select('id', 'account_name')->get();
 
+        // dd($data);
 
         return view('orders.create', $data);
     }

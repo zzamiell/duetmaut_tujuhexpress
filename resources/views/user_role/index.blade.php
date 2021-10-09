@@ -20,7 +20,7 @@
 
                 @if(session('access_menu'))
                     @foreach(session('access_menu') as $key => $menu)
-                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'userrole-create')
+                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/role/user-role)-userrole-create')
                             <a href="" type="button"
                             class="btn btn-dark waves-effect waves-light mt-3 float-right text-white"
                             style="background-color: #39BEAA; color: black; text-decoration: none;" data-toggle="modal" data-target="#exampleModal">Add new role</a>
@@ -42,24 +42,44 @@
                                 <td>{{$key+1}}</td>
                                 <td>{{$item->user_role_name}}</td>
                                 <td style="vertical-align: middle;">
+                                    <div 
+                                        class="btn-group" 
+                                        role="group" 
+                                        aria-label="Basic example">
                                         @if(session('access_menu'))
-                                        @foreach(session('access_menu') as $key => $menu)
-                                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-access-view')
-                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                            <button type="button" onclick="location.href='{{route('access.index', $item->id)}}'" class="btn btn-warning"><i
-                                                class="now-ui-icons objects_key-25"></i></button>
-                                        @endif
-                                            @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'userrole-update')
-                                    <a href="#" data-toggle="modal" data-target="#exampleModal{{$item->id}}" type="button" class="btn"><i
-                                        class="now-ui-icons ui-1_zoom-bold"></i></a>
-                                        @endif
+                                            @foreach(session('access_menu') as $key => $menu)
+                                                @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/role/user-role)-userrole-accessview')
+                                                    <button 
+                                                        type="button" 
+                                                        onclick="location.href='{{route('access.index', $item->id)}}'" 
+                                                        class="btn btn-warning">
+                                                        <i
+                                                            class="now-ui-icons objects_key-25">
+                                                        </i>
+                                                    </button>
+                                                @endif
+                                                @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/role/user-role)-userrole-update')
+                                                    <a 
+                                                        href="#" 
+                                                        data-toggle="modal" 
+                                                        data-target="#exampleModal{{$item->id}}" 
+                                                        type="button" 
+                                                        class="btn">
+                                                        <i class="now-ui-icons ui-1_zoom-bold">
+                                                        </i>
+                                                    </a>
+                                                @endif
 
-                                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'userrole-delete')
-                                    <button type="button" class="btn btn-danger"  onclick=deletedata(<?= $item->id ?>)><i
-                                        class="now-ui-icons ui-1_simple-remove"></i></button>
+                                                @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/role/user-role)-userrole-delete')
+                                                    <button 
+                                                        type="button" 
+                                                        class="btn btn-danger"  
+                                                        onclick=deletedata(<?= $item->id ?>)>
+                                                        <i class="now-ui-icons ui-1_simple-remove"></i>
+                                                    </button>
+                                                @endif
+                                            @endforeach
                                         @endif
-                                        @endforeach
-                                    @endif
                                     </div>
                                 </td>
                             </tr>

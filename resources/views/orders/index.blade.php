@@ -18,25 +18,25 @@
 
               @if(session('access_menu'))
                 @foreach(session('access_menu') as $menu)
-                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-create')
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-create')
                       <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
                     @endif
                     
-                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-import')
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-import')
                       <!-- Button trigger modal -->
                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
                         Import Order
                       </button>
                     @endif
 
-                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-update')
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-update')
                       <!-- Button trigger modal -->
                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateModal">
                         Mass Order Update
                       </button>
                     @endif
                     
-                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'orders-export')
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-export')
                       <a class="btn btn-success" href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}">Export</a>
                     @endif
                 @endforeach

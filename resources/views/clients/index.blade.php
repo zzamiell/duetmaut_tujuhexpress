@@ -17,9 +17,17 @@
             {{-- <h4 class="card-title"> Clients List </h4> --}}
             <div class="card-body">
                 <h3 class="float-left mt-3">Clients List</h3>
-                <a href="" type="button"
-                    class="btn btn-dark waves-effect waves-light mt-3 float-right text-white"
-                    style="background-color: #39BEAA; color: black; text-decoration: none;" data-toggle="modal" data-target="#exampleModal">Add new clients</a>
+                @if(session('access_menu'))
+                    @foreach(session('access_menu') as $menu)
+                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-create')
+                        <a href="" type="button"
+                            class="btn btn-dark waves-effect waves-light mt-3 float-right text-white"
+                            style="background-color: #39BEAA; color: black; text-decoration: none;" 
+                            data-toggle="modal" 
+                            data-target="#exampleModal">Add new clients</a>
+                        @endif
+                    @endforeach
+                @endif
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -53,10 +61,31 @@
                               <td style="vertical-align: middle;">{{ $item['created_at'] }}</td>
                               <td style="vertical-align: middle;">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                <a href="index/{{$item['id']}}/0" type="button" class="btn"><i
-                                    class="now-ui-icons ui-1_zoom-bold"></i></a>
-                                <button type="button" class="btn btn-danger"  onclick=deletedata(<?= $item['id'] ?>)><i
-                                    class="now-ui-icons ui-1_simple-remove"></i></button>
+                                <!-- show -->
+                                @if(session('access_menu'))
+                                    @foreach(session('access_menu') as $menu)
+                                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-show')
+                                            <a href="index/{{$item['id']}}/0" 
+                                                type="button" 
+                                                class="btn">
+                                                <i class="now-ui-icons ui-1_zoom-bold"></i>
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                
+                                @if(session('access_menu'))
+                                    @foreach(session('access_menu') as $menu)
+                                        @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-delete')
+                                            <button type="button" 
+                                                class="btn btn-danger"  
+                                                onclick=deletedata(<?= $item['id'] ?>)>
+                                                <i class="now-ui-icons ui-1_simple-remove"></i>
+                                            </button>
+                                        @endif
+                                    @endforeach
+                                @endif
+                                
                                 </div>
                             </td>
                           </tr>

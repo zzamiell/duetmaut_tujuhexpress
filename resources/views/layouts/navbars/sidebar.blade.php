@@ -51,7 +51,7 @@
           <li class="@if ($activePage == 'user-role') active @endif">
             <a href="{{ route('role.index') }}">
               <i class="now-ui-icons ui-1_settings-gear-63"></i>
-              <p> {{ __("User-role") }} </p>
+              <p> {{ __("User Role") }} </p>
             </a>
           </li>
           @endif

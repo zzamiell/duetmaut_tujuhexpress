@@ -55,6 +55,10 @@ class AuthController extends Controller
             Session::put('user_real_name', $data_result2['data']['name']);
             Session::put('token', $token);
 
+            if($user_role_id == 1) {
+                Session::put('client_account_name', $data_result2['data']['tb_client']['account_name']);
+            }
+
             return json_encode($data_result);
 
         } catch (BadResponseException $e){

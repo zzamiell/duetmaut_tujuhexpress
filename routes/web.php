@@ -72,6 +72,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('users/index', 'UserController@index')->name('users.index');
     Route::get('users/index', 'UserController@create')->name('users.create');
     Route::post('users/index', 'UserController@store')->name('users.store');
+    Route::post('insert_user', 'UserController@insert_user')->name('insert_user');
+    Route::post('update_user', 'UserController@update_user')->name('update_user');
+    Route::post('delete_user', 'UserController@delete_user')->name('delete_user');
+    Route::get('users/checked_user', 'UserController@checked_user')->name('checked_user');
 });
 
 Route::group(['middleware' => 'auth'], function () {

@@ -17,8 +17,22 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <button type="button" data-toggle="modal" data-target="#edit{{ $clients->id }}" style="float: right"
-                    class="btn btn-primary waves-effect waves-light mr-3 mt-3">Update Data</button>
+            @if(session('access_menu'))
+                @foreach(session('access_menu') as $menu)
+                    @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-update')
+                        <!-- update -->
+                        <button 
+                            type="button" 
+                            data-toggle="modal" 
+                            data-target="#edit{{ $clients->id }}" 
+                            style="float: right"
+                            class="btn btn-primary waves-effect waves-light mr-3 mt-3">
+                            Update Data
+                        </button>
+                    @endif
+                @endforeach
+            @endif
+
                 <div class="card-header">
                     <h5 class="title">Data Client ({{$clients->account_name}})</h5>
                 </div>
@@ -94,10 +108,51 @@
             <div class="card">
                 {{-- <button type="button" data-toggle="modal" data-target="#pricing{{ $clients->id }}" style="float: right"
                     class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</button> --}}
-                    <a type="button" href="/add_pricing/{{$clients->id}}" style="float: right" class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</a>
-                    <a style="float: right" class="btn btn-success mt-3" href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">Export</a>
+                    
+                    @if(session('access_menu'))
+                        @foreach(session('access_menu') as $menu)
+                            @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-create-data-pricing')
+                                <!-- add pricing -->
+                                <a 
+                                    type="button" 
+                                    href="/add_pricing/{{$clients->id}}" 
+                                    style="float: right" 
+                                    class="btn btn-primary waves-effect waves-light mr-3 mt-3">
+                                    Add Pricing
+                                </a>
+                            @endif
+                        @endforeach
+                    @endif
+                    
+                    @if(session('access_menu'))
+                        @foreach(session('access_menu') as $menu)
+                            @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-export-data-pricing')
+                                <!-- export -->
+                                <a 
+                                    style="float: right" 
+                                    class="btn btn-success mt-3" 
+                                    href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">
+                                    Export
+                                </a>
+                            @endif
+                        @endforeach
+                    @endif
                     {{-- <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a> --}}
-                    <a type="button" data-toggle="modal" data-target="#uploadModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Upload Data Pricing</a>
+                    
+                    @if(session('access_menu'))
+                        @foreach(session('access_menu') as $menu)
+                            @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-upload-data-pricing')
+                                <!-- upload -->
+                                <a type="button" 
+                                    data-toggle="modal" 
+                                    data-target="#uploadModal" 
+                                    style="float: right" 
+                                    class="btn btn-primary waves-effect waves-light mt-3 text-white">
+                                    Upload Data Pricing
+                                </a>
+                            @endif
+                        @endforeach
+                    @endif
                 <div class="card-header">
                     <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
                 </div>

@@ -43,7 +43,13 @@
                             <optgroup label="Pilih account name">
                                 <option value=''>Pilih account name</option>
                                 @foreach ($account as $kt)
-                                <option value="{{$kt->id}}">{{$kt->account_name}}</option>
+                                    @if(session('user_role_id') == 1)
+                                        @if(session('client_account_name') == $kt->account_name)
+                                        <option value="{{$kt->id}}">{{$kt->account_name}}</option>
+                                        @endif
+                                    @else
+                                        <option value="{{$kt->id}}">{{$kt->account_name}}</option>
+                                    @endif
                                 @endforeach
                             </optgroup>
                         </select>
