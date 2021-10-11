@@ -37,7 +37,19 @@
                     @endif
                     
                     @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-export')
-                      <a class="btn btn-success" href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}">Export</a>
+                      @if(session('user_role_id') == 1)
+                      <a 
+                        class="btn btn-success" 
+                        href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}/{{session('client_account_name')}}">
+                        Export
+                      </a>
+                      @else
+                      <a 
+                        class="btn btn-success" 
+                        href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}/all">
+                        Export
+                      </a>
+                      @endif
                     @endif
                 @endforeach
               @endif

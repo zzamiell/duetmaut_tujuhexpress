@@ -14,13 +14,15 @@ class OrdersExport implements FromCollection, WithHeadings
     protected $tanggal_awal;
     protected $tanggal_akhir;
     protected $status;
+    protected $account_name;
 
-    function __construct($page, $tanggal_awal, $tanggal_akhir, $status)
+    function __construct($page, $tanggal_awal, $tanggal_akhir, $status, $account_name)
     {
         $this->page = $page;
         $this->tanggal_awal = $tanggal_awal;
         $this->tanggal_akhir = $tanggal_akhir;
         $this->status = $status;
+        $this->account_name = $account_name;
     }
     /**
      * @return \Illuminate\Support\Collection
@@ -61,76 +63,153 @@ class OrdersExport implements FromCollection, WithHeadings
         //     ->orderBy('id', 'DESC')
         //     ->paginate(50, ['*'], $this->page, $this->page);
 
-        if ($this->status == "all") {
-            return  orders::select(
-                'awb',
-                'ref_id',
-                'account_name',
-                'service_order',
-                'service_type',
-                'shipper_name',
-                'shipper_phone',
-                'shipper_address',
-                'shipper_postal_code',
-                'shipper_area',
-                'shipper_district',
-                'recipient_name',
-                'recipient_phone',
-                'recipient_address',
-                'recipient_postal_code',
-                'recipient_area',
-                'recipient_district',
-                'weight',
-                'value_of_goods',
-                'order_status',
-                'is_insured',
-                'is_cod',
-                'delivery_fee',
-                'cod_fee',
-                'insurance_fee',
-                'total_fee',
-                'date_requested',
-                'update_date',
-            )->where('date_requested', '>=', $this->tanggal_awal . " 00:00:00")
-                ->where('date_requested', '<=', $this->tanggal_akhir . " 00:00:00")
-                ->orderBy('id', 'DESC')
-                ->get();
+        if($this->account_name == "all") {
+            if ($this->status == "all") {
+                return  orders::select(
+                    'awb',
+                    'ref_id',
+                    'account_name',
+                    'service_order',
+                    'service_type',
+                    'shipper_name',
+                    'shipper_phone',
+                    'shipper_address',
+                    'shipper_postal_code',
+                    'shipper_area',
+                    'shipper_district',
+                    'recipient_name',
+                    'recipient_phone',
+                    'recipient_address',
+                    'recipient_postal_code',
+                    'recipient_area',
+                    'recipient_district',
+                    'weight',
+                    'value_of_goods',
+                    'order_status',
+                    'is_insured',
+                    'is_cod',
+                    'delivery_fee',
+                    'cod_fee',
+                    'insurance_fee',
+                    'total_fee',
+                    'date_requested',
+                    'update_date',
+                )->where('date_requested', '>=', $this->tanggal_awal . " 00:00:00")
+                    ->where('date_requested', '<=', $this->tanggal_akhir . " 00:00:00")
+                    ->orderBy('id', 'DESC')
+                    ->get();
+            } else {
+                return orders::select(
+                    'awb',
+                    'ref_id',
+                    'account_name',
+                    'service_order',
+                    'service_type',
+                    'shipper_name',
+                    'shipper_phone',
+                    'shipper_address',
+                    'shipper_postal_code',
+                    'shipper_area',
+                    'shipper_district',
+                    'recipient_name',
+                    'recipient_phone',
+                    'recipient_address',
+                    'recipient_postal_code',
+                    'recipient_area',
+                    'recipient_district',
+                    'weight',
+                    'value_of_goods',
+                    'order_status',
+                    'is_insured',
+                    'is_cod',
+                    'delivery_fee',
+                    'cod_fee',
+                    'insurance_fee',
+                    'total_fee',
+                    'date_requested',
+                    'update_date',
+                )->where('date_requested', '>=', $this->tanggal_awal . " 00:00:00")
+                    ->where('date_requested', '<=', $this->tanggal_akhir . " 00:00:00")
+                    ->where('order_status',  $this->status)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+            }
         } else {
-            return orders::select(
-                'awb',
-                'ref_id',
-                'account_name',
-                'service_order',
-                'service_type',
-                'shipper_name',
-                'shipper_phone',
-                'shipper_address',
-                'shipper_postal_code',
-                'shipper_area',
-                'shipper_district',
-                'recipient_name',
-                'recipient_phone',
-                'recipient_address',
-                'recipient_postal_code',
-                'recipient_area',
-                'recipient_district',
-                'weight',
-                'value_of_goods',
-                'order_status',
-                'is_insured',
-                'is_cod',
-                'delivery_fee',
-                'cod_fee',
-                'insurance_fee',
-                'total_fee',
-                'date_requested',
-                'update_date',
-            )->where('date_requested', '>=', $this->tanggal_awal . " 00:00:00")
-                ->where('date_requested', '<=', $this->tanggal_akhir . " 00:00:00")
-                ->where('order_status',  $this->status)
-                ->orderBy('id', 'DESC')
-                ->get();
+            if ($this->status == "all") {
+                return  orders::select(
+                    'awb',
+                    'ref_id',
+                    'account_name',
+                    'service_order',
+                    'service_type',
+                    'shipper_name',
+                    'shipper_phone',
+                    'shipper_address',
+                    'shipper_postal_code',
+                    'shipper_area',
+                    'shipper_district',
+                    'recipient_name',
+                    'recipient_phone',
+                    'recipient_address',
+                    'recipient_postal_code',
+                    'recipient_area',
+                    'recipient_district',
+                    'weight',
+                    'value_of_goods',
+                    'order_status',
+                    'is_insured',
+                    'is_cod',
+                    'delivery_fee',
+                    'cod_fee',
+                    'insurance_fee',
+                    'total_fee',
+                    'date_requested',
+                    'update_date',
+                )->where('date_requested', '>=', $this->tanggal_awal . " 00:00:00")
+                    ->where('date_requested', '<=', $this->tanggal_akhir . " 00:00:00")
+                    ->where('account_name', '=', $this->account_name)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+            } else {
+                return orders::select(
+                    'awb',
+                    'ref_id',
+                    'account_name',
+                    'service_order',
+                    'service_type',
+                    'shipper_name',
+                    'shipper_phone',
+                    'shipper_address',
+                    'shipper_postal_code',
+                    'shipper_area',
+                    'shipper_district',
+                    'recipient_name',
+                    'recipient_phone',
+                    'recipient_address',
+                    'recipient_postal_code',
+                    'recipient_area',
+                    'recipient_district',
+                    'weight',
+                    'value_of_goods',
+                    'order_status',
+                    'is_insured',
+                    'is_cod',
+                    'delivery_fee',
+                    'cod_fee',
+                    'insurance_fee',
+                    'total_fee',
+                    'date_requested',
+                    'update_date',
+                )->where('date_requested', '>=', $this->tanggal_awal . " 00:00:00")
+                    ->where('date_requested', '<=', $this->tanggal_akhir . " 00:00:00")
+                    ->where('account_name', '=', $this->account_name)
+                    ->where('order_status',  $this->status)
+                    ->orderBy('id', 'DESC')
+                    ->get();
+            }
         }
+
+        
         // ->paginate(50, ['*'], $this->page, $this->page);
     }
 

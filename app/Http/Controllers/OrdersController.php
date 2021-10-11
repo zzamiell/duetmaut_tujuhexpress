@@ -380,13 +380,13 @@ class OrdersController extends Controller
     }
 
     //export
-    public function export($page, $tgl_awal, $tgl_akhir, $status)
+    public function export($page, $tgl_awal, $tgl_akhir, $status, $account_name)
     {
         $tanggal_awal = $tgl_awal !== null ? $tgl_awal : date('Y-m-d');
         $tanggal_akhir = $tgl_akhir !== null ? $tgl_akhir : date('Y-m-d');
 
         ini_set('memory_limit', '-1');
-        return Excel::download(new OrdersExport($page, $tanggal_awal, $tanggal_akhir, $status), 'orders.xlsx');
+        return Excel::download(new OrdersExport($page, $tanggal_awal, $tanggal_akhir, $status, $account_name), 'orders.xlsx');
         return Redirect()->route('orders.index')->with('success', 'Order has been downloaded!');
     }
 
