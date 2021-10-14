@@ -6,6 +6,7 @@
 
 @section('content')
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="{{ asset('assets/mask_input/jquery.maskedinput.js') }}"></script>
 <div class="panel-header panel-header-sm">
 </div>
 <div class="content">
@@ -21,10 +22,10 @@
                 @foreach(session('access_menu') as $menu)
                     @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-update')
                         <!-- update -->
-                        <button 
-                            type="button" 
-                            data-toggle="modal" 
-                            data-target="#edit{{ $clients->id }}" 
+                        <button
+                            type="button"
+                            data-toggle="modal"
+                            data-target="#edit{{ $clients[0]['id'] }}"
                             style="float: right"
                             class="btn btn-primary waves-effect waves-light mr-3 mt-3">
                             Update Data
@@ -34,7 +35,7 @@
             @endif
 
                 <div class="card-header">
-                    <h5 class="title">Data Client ({{$clients->account_name}})</h5>
+                    <h5 class="title">Data Client ({{$clients[0]['account_name']}})</h5>
                 </div>
                 <div class="card-body">
                     <form>
@@ -43,7 +44,7 @@
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>Account name</label>
-                                    <input type="text" class="form-control" value="{{$clients->account_name}}" readonly>
+                                    <input type="text" class="form-control" value="{{$clients[0]['account_name']}}" readonly>
                                 </div>
                             </div>
 
@@ -53,7 +54,7 @@
                                     <select name="clients_category" class="form-control" id="" readonly>
                                         <optgroup label="Pilih scope">
                                             @foreach ($category as $kt)
-                                            <option value="{{$kt->id}}" @if($kt->id==$clients->id) selected @endif>{{$kt->client_category}}</option>
+                                            <option value="{{$kt->id}}" @if($kt->id==$clients[0]['id']) selected @endif>{{$kt->client_category}}</option>
                                             @endforeach
                                         </optgroup>
                                     </select>
@@ -63,36 +64,35 @@
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>PIC name</label>
-                                    <input type="text" class="form-control" value="{{$clients->pic_name}}" readonly>
+                                    <input type="text" class="form-control" value="{{$clients[0]['pic_name']}}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>PIC number</label>
-                                    <input type="text" class="form-control" value="{{$clients->pic_number}}" readonly>
+                                    <input type="text" class="form-control" value="{{$clients[0]['pic_number']}}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>Sales agent</label>
-                                    <input type="text" class="form-control" value="{{$clients->sales_agent}}" readonly>
+                                    <input type="text" class="form-control" value="{{$clients[0]['sales_agent']}}" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>Cod fee</label>
-                                    <input type="text" class="form-control" value="{{$clients->cod_fee}} %" readonly>
+                                    <input type="text" id="cod" class="form-control" value="{{$clients[0]['cod_fee']}}%" readonly>
                                 </div>
                             </div>
 
                             <div class="col-md-12 pr-1">
                                 <div class="form-group">
                                     <label>Insurance fee</label>
-                                    <input type="text" class="form-control" value="{{$clients->insurance_fee}} %"
-                                        readonly>
+                                    <input type="text" class="form-control" value="{{$clients[0]['insurance_fee']}}%" readonly>
                                 </div>
                             </div>
                         </div>
@@ -108,29 +108,29 @@
             <div class="card">
                 {{-- <button type="button" data-toggle="modal" data-target="#pricing{{ $clients->id }}" style="float: right"
                     class="btn btn-primary waves-effect waves-light mr-3 mt-3">Add Pricing</button> --}}
-                    
+
                     @if(session('access_menu'))
                         @foreach(session('access_menu') as $menu)
                             @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-create-data-pricing')
                                 <!-- add pricing -->
-                                <a 
-                                    type="button" 
-                                    href="/add_pricing/{{$clients->id}}" 
-                                    style="float: right" 
+                                <a
+                                    type="button"
+                                    href="/add_pricing/{{$clients[0]['id']}}"
+                                    style="float: right"
                                     class="btn btn-primary waves-effect waves-light mr-3 mt-3">
                                     Add Pricing
                                 </a>
                             @endif
                         @endforeach
                     @endif
-                    
+
                     @if(session('access_menu'))
                         @foreach(session('access_menu') as $menu)
                             @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-export-data-pricing')
                                 <!-- export -->
-                                <a 
-                                    style="float: right" 
-                                    class="btn btn-success mt-3" 
+                                <a
+                                    style="float: right"
+                                    class="btn btn-success mt-3"
                                     href="/pricing/index/export/{{$pricing->currentPage()}}/{{Request::segment(3)}}">
                                     Export
                                 </a>
@@ -138,15 +138,15 @@
                         @endforeach
                     @endif
                     {{-- <a type="button" data-toggle="modal" data-target="#exampleModal" style="float: right" class="btn btn-primary waves-effect waves-light mt-3 text-white">Filter Service</a> --}}
-                    
+
                     @if(session('access_menu'))
                         @foreach(session('access_menu') as $menu)
                             @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-upload-data-pricing')
                                 <!-- upload -->
-                                <a type="button" 
-                                    data-toggle="modal" 
-                                    data-target="#uploadModal" 
-                                    style="float: right" 
+                                <a type="button"
+                                    data-toggle="modal"
+                                    data-target="#uploadModal"
+                                    style="float: right"
                                     class="btn btn-primary waves-effect waves-light mt-3 text-white">
                                     Upload Data Pricing
                                 </a>
@@ -154,7 +154,7 @@
                         @endforeach
                     @endif
                 <div class="card-header">
-                    <h5 class="title">Data Pricing ({{$clients->account_name}})</h5>
+                    <h5 class="title">Data Pricing ({{$clients[0]['account_name']}})</h5>
                 </div>
                 <div class="card-body">
                     <div class="card-body">
@@ -258,11 +258,11 @@
 
 
  <!-- Modal isi tambah banner -->
- <div class="modal fade" id="edit{{ $clients->id }}" tabindex="-1" role="dialog"
+ <div class="modal fade" id="edit{{ $clients[0]['id'] }}" tabindex="-1" role="dialog"
  aria-labelledby="exampleModalLabel" aria-hidden="true">
  <div class="modal-dialog modal-lg" role="document">
      <div class="modal-content">
-         <form action="{{route('update_client', $clients->id)}}" method="POST" id="form-program" class="form-class" name="form-name" enctype="multipart/form-data">
+         <form action="{{route('update_client', $clients[0]['id'])}}" method="POST" id="form-program" class="form-class" name="form-name" enctype="multipart/form-data">
             {{-- @method('PUT') --}}
             @csrf
              <div class="modal-header">
@@ -277,7 +277,7 @@
                  {{-- isi --}}
                  <div class="form-group">
                      <label>Account Name</label>
-                     <input type="text" name="acc_name" class="form-control" value="{{ $clients->account_name }}" required />
+                     <input type="text" name="acc_name" class="form-control" value="{{ $clients[0]['account_name'] }}" required />
                  </div>
 
                 <div class="form-group">
@@ -285,7 +285,7 @@
                      <select name="clients_category" class="form-control" id="">
                      <optgroup label="Pilih scope">
                          @foreach ($category as $kt)
-                         <option value="{{$kt->id}}" @if($kt->id==$clients->id) selected @endif>{{$kt->client_category}}</option>
+                         <option value="{{$kt->id}}" @if($kt->id==$clients[0]['id']) selected @endif>{{$kt->client_category}}</option>
                          @endforeach
                      </optgroup>
                      </select>
@@ -293,27 +293,27 @@
 
                  <div class="form-group">
                      <label>Pic Name</label>
-                     <input type="text" name="pic_name" class="form-control" value="{{ $clients->pic_name }}" required />
+                     <input type="text" name="pic_name" class="form-control" value="{{ $clients[0]['pic_name'] }}" required />
                  </div>
 
                  <div class="form-group">
                      <label>Pic Number</label>
-                     <input type="text" name="pic_number" class="form-control" value="{{ $clients->pic_number }}" required />
+                     <input type="text" name="pic_number" class="form-control" value="{{ $clients[0]['pic_number'] }}" required />
                  </div>
 
                  <div class="form-group">
                      <label>Sales Agent</label>
-                     <input type="text" name="sales_agent" class="form-control" value="{{ $clients->sales_agent }}" required />
+                     <input type="text" name="sales_agent" class="form-control" value="{{ $clients[0]['sales_agent'] }}" required />
                  </div>
 
                  <div class="form-group">
                      <label>Cod Fee</label>
-                     <input type="text" name="cod_fee" class="form-control" value="{{ $clients->cod_fee }}" required />
+                     <input type="text" name="cod_fee" id="codnya" class="form-control" value="{{ $clients[0]['cod_fee'] }}%" placeholder="00%" required />
                  </div>
 
                  <div class="form-group">
                      <label>Insurance Fee</label>
-                     <input type="text" name="insurance_fee" class="form-control" value="{{ $clients->insurance_fee }}" required />
+                     <input type="text" name="insurance_fee" id="insurance" class="form-control" value="{{ $clients[0]['insurance_fee'] }}%" placeholder="00%" required />
                  </div>
                  {{-- end isi --}}
              </div>
@@ -423,6 +423,11 @@
 @endif
 
 <script type="text/javascript">
+  jQuery(function($){
+$("#codnya").mask("99%");
+$("#insurance").mask("99%");
+});
+
 function myFunction(id) {
     $("#area").val("area sudah terpilih");
     $("#id_area").val(id);

@@ -34,6 +34,10 @@
             <div class="row">
                 <div class="col-md-7 pr-1">
                     <div class="form-group">
+                        <label>{{__(" Expected Delivery Date")}}</label>
+                        <input type="datetime-local" name="expected_delivery_date" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
+                    </div>
+                    <div class="form-group">
                         <label>{{__(" Ref ID")}}</label>
                         <input type="string" name="ref_id" class=".form-control::-webkit-input-placeholder form-control" placeholder="" >
                     </div>

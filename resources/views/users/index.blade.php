@@ -18,10 +18,10 @@
               @if(session('access_menu'))
                 @foreach(session('access_menu') as $menu)
                   @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/user)-users-create')
-                  <button 
-                    type="button" 
-                    class="btn btn-primary" 
-                    data-toggle="modal" 
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-toggle="modal"
                     data-target="#userCreateModal"
                     onclick="addUser()"
                     >
@@ -30,7 +30,7 @@
                   @endif
                 @endforeach
               @endif
-              
+
 
                         <!-- Modal -->
                         <div class="modal fade" id="userCreateModal" tabindex="-1" role="dialog" aria-labelledby="userCreateModalLabel" aria-hidden="true">
@@ -42,9 +42,9 @@
                                   <span aria-hidden="true">&times;</span>
                                 </button>
                               </div>
-                              
+
                               <div class="modal-body">
-                                
+
                                 <form method="POST" action="{{ route('insert_user') }}" enctype="multipart/form-data" id="user_form">
                                   @csrf
                                   <!--Begin input name -->
@@ -80,8 +80,8 @@
 
                                   <!-- user role -->
                                   <div class="form-group">
-                                      <select 
-                                        name="user_role_id" 
+                                      <select
+                                        name="user_role_id"
                                         class="form-control"
                                         id="user_role_id"
                                         onchange="addingClientChoice();"
@@ -91,24 +91,24 @@
                                                <option value="{{$user_role->id}}">{{$user_role->user_role_name}}</option>
                                               @endforeach
                                           </optgroup>
-                                      </select>                                      
+                                      </select>
                                   </div>
 
                                   <!-- clients -->
                                   <div class="form-group" id="clients_id">
-                                      <select 
-                                        name="clients_id" 
+                                      <select
+                                        name="clients_id"
                                         class="form-control"
-                                        id="client_id"                                       
+                                        id="client_id"
                                         >
                                           <optgroup label="Pilih Client">
                                               @foreach($clients as $client )
                                                <option value="{{$client->id}}">{{$client->id}} - {{$client->account_name}}</option>
                                               @endforeach
                                           </optgroup>
-                                      </select>                                      
+                                      </select>
                                   </div>
-                  
+
                                   <!--Begin input password -->
                                   <div  id="password" class="input-group {{ $errors->has('password') ? ' has-danger' : '' }}">
                                     <div class="input-group-prepend">
@@ -135,7 +135,7 @@
                                   </div>
 
                                   <input class="form-control" name="userid" id="userid" hidden>
-                  
+
                                   <div class="modal-footer ">
                                     <button id="button-user" type="submit" class="btn btn-primary btn-round btn-md">Register User</button>
                                   </div>
@@ -169,11 +169,11 @@
                     <th colspan="2">
                       Actions
                     </th>
-                    
-                   
+
+
                   </thead>
                   <tbody>
-    
+
                     @foreach ($users as $user )
                     <tr>
                       <td>{{ $user->id }}</td>
@@ -181,17 +181,17 @@
                       <td>{{ $user->email }}</td>
                       <td>{{ $user->user_role_name }}</td>
                       <td>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             class="btn btn-warning"
                             onclick="editUser({{$user->id}});"
-                            data-toggle="modal" 
+                            data-toggle="modal"
                             data-target="#userCreateModal"
                             >
                             <i class="now-ui-icons ui-1_settings-gear-63"></i>
                         </button>
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             class="btn btn-danger"
                             onclick="deleteUser({{$user->id}});"
                             >
@@ -199,11 +199,10 @@
                         </button>
                       </td>
                     </tr>
-                    @endforeach 
-                    
+                    @endforeach
                   </tbody>
                 </table>
-            
+
 
                       </div>
                     </div>
@@ -218,6 +217,6 @@
           </div>
         </div>
       </div>
-      
+
 @include('users.action')
 @endsection

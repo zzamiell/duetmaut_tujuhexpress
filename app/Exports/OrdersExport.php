@@ -243,7 +243,8 @@ class OrdersExport implements FromCollection, WithHeadings
             'insurance_fee',
             'total_fee',
             'date_requested',
-            'update_date'
+            'update_date',
+            'expected_delivery_date'
         ];
     }
 }

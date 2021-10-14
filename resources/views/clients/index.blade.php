@@ -5,6 +5,16 @@
   ])
 
 @section('content')
+<style>
+     .pagination {
+        display: -ms-flexbox;
+    flex-wrap: wrap;
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+    }
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="{{ asset('assets/mask_input/jquery.maskedinput.js') }}"></script>
   <div class="panel-header panel-header-sm">
@@ -22,8 +32,8 @@
                         @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-create')
                         <a href="" type="button"
                             class="btn btn-dark waves-effect waves-light mt-3 float-right text-white"
-                            style="background-color: #39BEAA; color: black; text-decoration: none;" 
-                            data-toggle="modal" 
+                            style="background-color: #39BEAA; color: black; text-decoration: none;"
+                            data-toggle="modal"
                             data-target="#exampleModal">Add new clients</a>
                         @endif
                     @endforeach
@@ -45,8 +55,17 @@
                        <th>action</th>
                       </thead>
                       <tbody>
-                          @foreach ($clients as $key => $item)
+                          @foreach ($clients['rows'] as $key => $item)
                           @php
+                            $batas = $clients['max_page'];
+                            $halaman = isset($clients['current_page'])?(int)$clients['current_page'] : 1;
+                            $halaman_awal = ($halaman>1) ? ($halaman * $batas) - $batas : 0;
+                            $previous = $halaman - 1;
+				            $next = $halaman + 1;
+                            $jumlah_data = $clients['total_data'];
+				            $total_halaman = $clients['total_page'];
+                            $nomor = $halaman_awal+1;
+
                           $created_at = date("Y-m-d", strtotime($item['created_at']));
                           @endphp
                           <tr>
@@ -65,27 +84,27 @@
                                 @if(session('access_menu'))
                                     @foreach(session('access_menu') as $menu)
                                         @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-show')
-                                            <a href="index/{{$item['id']}}/0" 
-                                                type="button" 
+                                            <a href="index/{{$item['id']}}/0"
+                                                type="button"
                                                 class="btn">
                                                 <i class="now-ui-icons ui-1_zoom-bold"></i>
                                             </a>
                                         @endif
                                     @endforeach
                                 @endif
-                                
+
                                 @if(session('access_menu'))
                                     @foreach(session('access_menu') as $menu)
                                         @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/clients/index)-clients-delete')
-                                            <button type="button" 
-                                                class="btn btn-danger"  
+                                            <button type="button"
+                                                class="btn btn-danger"
                                                 onclick=deletedata(<?= $item['id'] ?>)>
                                                 <i class="now-ui-icons ui-1_simple-remove"></i>
                                             </button>
                                         @endif
                                     @endforeach
                                 @endif
-                                
+
                                 </div>
                             </td>
                           </tr>
@@ -164,6 +183,24 @@
                           @endforeach
                       </tbody>
                     </table>
+
+                    <nav>
+                        <ul class="pagination text-left">
+                            <li class="page-item">
+                                <a class="page-link" <?php if($halaman > 1){ echo "href='?halaman=$Previous'"; } ?>>Previous</a>
+                            </li>
+                            <?php
+                            for($x=1;$x<=$total_halaman;$x++){
+                                ?>
+                                <li class="page-item"><a class="page-link" href="?halaman=<?php echo $x ?>"><?php echo $x; ?></a></li>
+                                <?php
+                            }
+                            ?>
+                            <li class="page-item">
+                                <a  class="page-link" <?php if($halaman < $total_halaman) { echo "href='?halaman=$next'"; } ?>>Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                   </div>
             </div>
           </div>

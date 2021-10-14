@@ -35,7 +35,7 @@ class OrdersController extends Controller
         $tanggal_awal = date('Y-m-d', strtotime('-3 months'));
         $tanggal_akhir = date('Y-m-d');
 
-        if(Session::get('user_role_id') == 1) {
+        if (Session::get('user_role_id') == 1) {
             if ($request->get('cari')) {
                 $query = $request->get('cari');
                 $orders = DB::table('orders')
@@ -48,7 +48,7 @@ class OrdersController extends Controller
             } else {
                 // $orders = DB::table('orders')->paginate(10);
                 $tiga_bulan = \Carbon\Carbon::today()->subDays(90);
-                
+
                 $orders = DB::table('orders')
                     ->where([
                         ['date_requested', '>=', $tiga_bulan],
@@ -56,7 +56,7 @@ class OrdersController extends Controller
                     ])
                     ->orderBy('id', 'DESC')
                     ->paginate(50);
-    
+
                 $data = compact('orders', 'orders');
                 $data['tanggal_awal'] = $tanggal_awal;
                 $data['tanggal_akhir'] = $tanggal_akhir;
@@ -76,7 +76,7 @@ class OrdersController extends Controller
                 $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
                     ->orderBy('id', 'DESC')
                     ->paginate(50);
-    
+
                 $data = compact('orders', 'orders');
                 $data['tanggal_awal'] = $tanggal_awal;
                 $data['tanggal_akhir'] = $tanggal_akhir;
@@ -94,11 +94,11 @@ class OrdersController extends Controller
      */
     public function filter(Request $request)
     {
-        
+
         $tanggal_awal = $request->tanggal_awal !== null ? $request->tanggal_awal : date('Y-m-d', strtotime('-3 months'));
         $tanggal_akhir = $request->tanggal_akhir !== null ? $request->tanggal_akhir : date('Y-m-d');
 
-        if(Session::get('user_role_id') == 1) {
+        if (Session::get('user_role_id') == 1) {
             if ($tanggal_awal !== null && $tanggal_akhir !== null) {
                 if ($request->order_status != "all") {
                     // dd($request->tanggal_awal);
@@ -110,7 +110,6 @@ class OrdersController extends Controller
                         ->whereBetween('date_requested', [$tanggal_awal . " 00:00:00", $tanggal_akhir . " 23:59:59"])
                         ->orderBy('id', 'DESC')
                         ->paginate(10);
-                        
                 } else {
                     // dd($request->tanggal_akhir);
                     // $query = "
@@ -132,7 +131,7 @@ class OrdersController extends Controller
                     ])
                     ->orderBy('id', 'DESC')
                     ->paginate(10);
-    
+
                 // dd($orders);
             }
         } else {
@@ -166,12 +165,12 @@ class OrdersController extends Controller
                 $orders = DB::table('orders')->where('date_requested', '>=', $tiga_bulan)
                     ->orderBy('id', 'DESC')
                     ->paginate(10);
-    
+
                 // dd($orders);
             }
         }
 
-        
+
         $data = compact('orders', 'orders');
         $data['tanggal_awal'] = $tanggal_awal;
         $data['tanggal_akhir'] = $tanggal_akhir;
@@ -202,10 +201,20 @@ class OrdersController extends Controller
         // dd($request->all());
         $ship = explode('-', $request->get('shipper_postal_code'));
         $recipt = explode('-', $request->get('recipient_postal_code'));
-        // dd($ship);
-        $insert =  orders::create([
-            'awb' => $request->awb,
-            // 'date_requested' => $request->date_requested,
+
+        // generate id awb
+        $config = [
+            'table' => 'orders',
+            'field' => 'awb',
+            'length' => 15,
+            'prefix' => 'TX-' . date('ymd')
+        ];
+
+        $awb = IdGenerator::generate($config);
+
+        $data =  array(
+            'expected_delivery_date' => $request->expected_delivery_date,
+            'awb' => $awb,
             'ref_id' => $request->ref_id,
             'account_name' => $request->account_name,
             'service_order' => $request->service_order,
@@ -224,7 +233,7 @@ class OrdersController extends Controller
             'recipient_district' => $request->recipient_district,
             'weight' => $request->weight,
             'value_of_goods' => $request->value_of_goods,
-            'order_status' => $request->order_status,
+            'order_status' => 'info_received',
             'is_insured' => $request->is_insured,
             'is_cod' => $request->is_cod,
             'delivery_fee' => $request->delivery_fee,
@@ -232,18 +241,27 @@ class OrdersController extends Controller
             'insurance_fee' => $request->insurance_fee,
             'total_fee' => $request->total_fee,
             'update_date' => $request->update_date,
+        );
+
+        $insert = config('client_be')->request('POST', '/api/v1/orders', [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . session('token'),
+            ],
+            'exceptions' => false,
+            'json' => $data
         ]);
 
         if ($insert) {
-            $last_order = DB::table('orders')->orderBy('id', 'desc')->first();
+            // $last_order = DB::table('orders')->orderBy('id', 'desc')->first();
 
-            $data = array(
-                'awb' => $last_order->awb,
-                'order_status' => $last_order->order_status,
-                'pic' => \Auth::user()->name
-            );
+            // $data = array(
+            //     'awb' => $last_order->awb,
+            //     'order_status' => $last_order->order_status,
+            //     'pic' => \Auth::user()->name
+            // );
 
-            $log = DB::table('orders_logs')->insert($data);
+            // $log = DB::table('orders_logs')->insert($data);
             return redirect()->route('orders.index')->with('success', 'Order has been added!');
         } else {
             return redirect()->route('orders.index')->with('success', 'Order has been added!');
@@ -297,7 +315,6 @@ class OrdersController extends Controller
      */
     public function update(Request $request, orders $orders)
     {
-        // dd('masuk');
         $orders->update([
             'awb' => $request->awb,
             'date_requested' => $request->date_requested,
@@ -345,22 +362,31 @@ class OrdersController extends Controller
             'order_status' => $request->get('order_status')
         );
 
-        $update = DB::table('orders')
-            ->where('id', $request->get('id'))
-            ->update($data);
+        $update = config('client_be')->request('PUT', '/api/v1/orders/' . $id, [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . session('token'),
+            ],
+            'exceptions' => false,
+            'json' => $data
+        ]);
+
+        // $update = DB::table('orders')
+        //     ->where('id', $request->get('id'))
+        //     ->update($data);
 
         if ($update) {
-            $check_order = DB::table('orders')
-                ->where('id', $request->get('id'))
-                ->first();
+            //     $check_order = DB::table('orders')
+            //         ->where('id', $request->get('id'))
+            //         ->first();
 
-            $data = array(
-                'awb' => $check_order->awb,
-                'order_status' => $check_order->order_status,
-                'pic' => \Auth::user()->name
-            );
+            //     $data = array(
+            //         'awb' => $check_order->awb,
+            //         'order_status' => $check_order->order_status,
+            //         'pic' => \Auth::user()->name
+            //     );
 
-            $log = DB::table('orders_logs')->insert($data);
+            //     $log = DB::table('orders_logs')->insert($data);
 
             return Redirect()->back()->with('success', 'Order has been edited!');
         } else {
