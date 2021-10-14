@@ -154,10 +154,10 @@
 
 
                                       <div class="row">
-                                        <div class="col-7 pr-1">
+                                        <div class="col-12 pr-1">
                                             <div class="form-group">
                                                 <label>{{__(" Status")}}</label>
-                                                <select name="order_status" required="">
+                                                <select name="order_status" class="form-control" required="">
 
                                                   @foreach ($OrderStatus as $status )
                                                     <option value="{{ $status['name'] }}" @if (isset($orders->order_status) &&

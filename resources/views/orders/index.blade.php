@@ -21,7 +21,7 @@
                     @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-create')
                       <a class="btn btn-success" href="{{ route('orders.create')}}">Add Order</a>
                     @endif
-                    
+
                     @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-import')
                       <!-- Button trigger modal -->
                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
@@ -35,7 +35,7 @@
                         Mass Order Update
                       </button>
                     @endif
-                    
+
                     @if($menu['tb_menu']['menu_function_id'] == 2 && $menu['tb_menu']['menu_name'] == 'component-(/orders/index)-orders-export')
                       <a class="btn btn-success" href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}">Export</a>
                     @endif
@@ -109,6 +109,7 @@
                             <option value="fail_courier" @if(app('request')->input('fail_courier') == "fail_courier") selected @endif>Fail Courier</option>
                             <option value="fail_recipient" @if(app('request')->input('fail_recipient') == "fail_recipient") selected @endif>Fail Recipient</option>
                             <option value="fail_attempt_1" @if(app('request')->input('fail_attempt_1') == "fail_attempt_1") selected @endif>Faile Attempt</option>
+                            <option value="cancel" @if(app('request')->input('cancel') == "cancel") selected @endif>Cancel</option>
                           </select>
                         </div>
                       </div>
@@ -152,7 +153,7 @@
           <div class="table-responsive">
             <table id="abdi" class="table">
               <thead class=" text-primary">
-                  <th>No</th>
+                  <th>Expected Delivery Date</th>
                 <th>
                   Date Request
                 </th>
@@ -181,7 +182,7 @@
 
                 @foreach ($orders as $key => $order )
                 <tr>
-                    <td>{{$key+1}}</td>
+                    <td>{{$order->expected_delivery_date}}</td>
                   <td>{{ $order->date_requested }}</td>
                   <td>{{ $order->awb }}</td>
                   <td>{{ $order->ref_id }}</td>

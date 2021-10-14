@@ -16,20 +16,19 @@ use App\Exports\PricingExport;
 
 class ClientsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // $clients =  DB::table('tb_clients')->paginate(10);
-        // dd(config());
-        $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=1&max_page=10&sort_by=id&sort_method=DESC', [
+        $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=' . $request->halaman . '&max_page=10&sort_by=id&sort_method=DESC', [
             'headers' => [
                 // 'Authorization' => 'Bearer ' . Session::get('token'),
                 'Accept' => 'application/json'
             ],
             'exceptions' => false,
         ]);
-        $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data']['rows'];
+        $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data'];
         $category = DB::table('reff_client_category')->get();
-        // dd($clients[0]['reff_client_category']['id']);
+        // dd($clients);
         return view('clients.index', compact('clients', 'category'));
     }
 
@@ -87,7 +86,14 @@ class ClientsController extends Controller
     public function show(Request $request, $id, $service)
     {
         if ($request->get('service_order')) {
-            $clients =  DB::table('tb_clients')->where('id', $id)->first();
+            $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?id=' . $id, [
+                'headers' => [
+                    'Accept' => 'application/json'
+                ],
+                'exceptions' => false,
+            ]);
+            $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data']['rows'];
+            // $clients =  DB::table('tb_clients')->where('id', $id)->first();
             $category = DB::table('reff_client_category')->get();
             $service = DB::table('reff_service_order')->get();
             $area = DB::table('reff_area')->paginate(10);
@@ -101,15 +107,21 @@ class ClientsController extends Controller
             $pricing =  DB::table('tb_pricing')
                 ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
                 ->join('tb_clients', 'tb_clients.id', '=', 'tb_pricing.id_client')
-                // ->join('reff_service_order', 'reff_service_order.id', '=', 'tb_pricing.id_service_order')
                 ->where('tb_pricing.id_client', $id)
                 ->where('tb_pricing.service_order', $request->get('service_order'))
                 ->orderBy('tb_pricing.id', 'DESC')
                 ->paginate(10);
-            // dd($pricing);
+
             return view('clients.show', compact('clients', 'category', 'area', 'service', 'pricing', 'breadcumb'));
         } else {
-            $clients =  DB::table('tb_clients')->where('id', $id)->first();
+            $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?id=' . $id, [
+                'headers' => [
+                    'Accept' => 'application/json'
+                ],
+                'exceptions' => false,
+            ]);
+            $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data']['rows'];
+            // $clients =  DB::table('tb_clients')->where('id', $id)->first();
             $category = DB::table('reff_client_category')->get();
             $service = DB::table('reff_service_order')->get();
             $area = DB::table('reff_area')->paginate(10);
@@ -120,20 +132,14 @@ class ClientsController extends Controller
                 ->groupBy('service_order')
                 ->get();
 
-            // $data_pricing = config('client_be')->request('GET', '/api/v1/tb-pricing?page=1&max_page=10&sort_by=id&sort_method=DESC&id_client=' . $id, [
-            //     'headers' => [
-            //         'Accept' => 'application/json'
-            //     ],
-            //     'exceptions' => false,
-            // ]);
-            // $pricing = json_decode($data_pricing->getBody()->getContents(), TRUE)['data']['rows'];
+
             $pricing =  DB::table('tb_pricing')
                 ->join('reff_area', 'reff_area.id', '=', 'tb_pricing.id_area')
                 ->join('tb_clients', 'tb_clients.id', '=', 'tb_pricing.id_client')
                 ->where('id_client', $id)
                 ->orderBy('tb_pricing.id', 'DESC')
                 ->paginate(10);
-            // dd($pricing);
+
             return view('clients.show', compact('clients', 'category', 'area', 'service', 'pricing', 'breadcumb'));
         }
     }
@@ -163,7 +169,6 @@ class ClientsController extends Controller
         ]);
         $pricing = json_decode($data_pricing->getBody()->getContents(), TRUE)['data']['rows'];
 
-        // dd($pricing);
         return view('clients.add_pricing', compact('clients', 'category', 'area', 'service', 'pricing'));
     }
 
@@ -205,6 +210,7 @@ class ClientsController extends Controller
     public function insert_pricing(Request $request)
     {
         try {
+            // dd($request->all());
             $data = array(
                 'id_client' => (int)$request->get('id_client'),
                 'service_order' => $request->get('service_order'),
@@ -233,17 +239,18 @@ class ClientsController extends Controller
     public function update_client(Request $request, $id)
     {
         try {
+            $cod = str_replace('%', '', $request->get('cod_fee'));
+            $insurance = str_replace('%', '', $request->get('insurance_fee'));
             $data = array(
                 'account_name' => $request->get('acc_name'),
                 'pic_name' => $request->get('pic_name'),
                 'pic_number' => $request->get('pic_number'),
                 'sales_agent' => $request->get('sales_agent'),
-                'cod_fee' => $request->get('cod_fee'),
-                'insurance_fee' => $request->get('insurance_fee'),
-                // 'updated_at' => null,
+                'cod_fee' => $cod,
+                'insurance_fee' => $insurance,
                 'clients_category' => $request->get('clients_category'),
             );
-            // dd($data);
+
             $create = config('client_be')->request('PUT', '/api/v1/tb-clients/' . $id, [
                 'headers' => [
                     'Accept' => 'application/json'
