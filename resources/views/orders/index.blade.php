@@ -40,13 +40,13 @@
                       @if(session('user_role_id') == 1)
                       <a 
                         class="btn btn-success" 
-                        href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}/{{session('client_account_name')}}">
+                        href="#">
                         Export
                       </a>
                       @else
                       <a 
                         class="btn btn-success" 
-                        href="/orders/index/export/{{$orders->currentPage()}}/{{ $tanggal_awal }}/{{$tanggal_akhir}}/{{app('request')->input('order_status') ?? 'all'}}/all">
+                        href="#">
                         Export
                       </a>
                       @endif
@@ -73,7 +73,8 @@
                             min="{{date('Y-m-d', strtotime('-3 month'))}}"
                             max="{{date('Y-m-d', strtotime('+3 month'))}}"
                             placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}"
-                            type="date" name="tanggal_awal"
+                            type="date" 
+                            name="tanggal_awal"
                             value="{{ $tanggal_awal ?? '' }}"
                             id="tanggal_awal" autofocus>
                           @if ($errors->has('tanggal_awal'))
@@ -145,9 +146,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-8">
-                    <div class="text-center pagination">
-                        {{$orders->links("pagination::bootstrap-4")}}
-                    </div>
+                    
                 </div>
                 <div class="col-md-4">
                     <form action="/orders/index" method="get">
@@ -194,15 +193,15 @@
 
                 @foreach ($orders as $key => $order )
                 <tr>
-                  <td>{{$order->expected_delivery_date}}</td>
-                  <td>{{ $order->date_requested }}</td>
-                  <td>{{ $order->awb }}</td>
-                  <td>{{ $order->ref_id }}</td>
-                  <td>{{ $order->account_name }}</td>
+                  <td>{{ date('d M Y H:i:s',strtotime($order['expected_delivery_date'])) }}</td>
+                  <td>{{ date('d M Y',strtotime($order['date_requested'])) }}</td>
+                  <td>{{ $order['awb'] }}</td>
+                  <td>{{ $order['ref_id'] }}</td>
+                  <td>{{ $order['account_name'] }}</td>
 
-                  <td>{{ $order->service_type }}</td>
-                  <td>{{ $order->total_fee }}</td>
-                  <td><a class="btn btn-primary" href="/orders/show/{{$order->id}}/{{$order->awb}}">{{ $order->order_status}}</a>
+                  <td>{{ $order['service_type'] }}</td>
+                  <td>{{ $order['total_fee'] }}</td>
+                  <td><a class="btn btn-primary" href="/orders/show/{{$order['id']}}/{{$order['awb']}}">{{ $order['order_status']}}</a>
                     {{ csrf_field() }}</td>
 
                 </tr>
@@ -210,9 +209,55 @@
 
               </tbody>
             </table>
+
+            <div class="row">
+              <div class="col-5">
+              <ul class="pagination">
+                  <li class="page-item {{$current_page == 1 ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page-1)}}">Previous</a></li>
+                  <?php for ($i=1; $i<=3 ; $i++){ ?>
+                    <li class="page-item {{$i == $current_page ? 'active' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$i}}" id="current_page_id">{{$i}}</a></li>
+                  <?php } ?>
+                  
+                  <?php for ($i=1; $i<=$total_page ; $i++) { 
+                    if($current_page!=1){
+                      if($current_page!=2){
+                        if($current_page!=3){
+                          if($i==$current_page){                        
+                    ?>
+                      <li class="page-item {{$i == $current_page ? 'active' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$i}}" id="current_page_id">{{$i}}</a></li>
+                    <?php }
+                        }
+                      }
+                    }
+                    } ?>
+
+                      <li class="page-item"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$current_page}}">..</a></li>
+                      <li class="page-item {{$total_page == $current_page ? 'active' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$total_page}}">{{$total_page}}</a></li>
+                      
+                  <li class="page-item {{$current_page == $total_page ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page+1)}}">Next</a></li>
+              </ul>
+                  
+              </div>
+              <div class="col-4"></div>
+              <div class="col-1"><strong><p>Total Data </p></strong></div>
+              <div class="col-2">
+                  <div class="form-group form-group-marginless">
+                      <div class="input-group">
+                          <select onchange="onChangeTotalData()" class="form-control kt-select2 init-select2" name="max_page" id="max_page">
+                              <option value="10" @if($max_page == "10") selected @endif>10</option>
+                              <option value="50" @if($max_page == "50") selected @endif>50</option>
+                              <option value="100" @if($max_page == "100") selected @endif>100</option>
+                              <option value="200" @if($max_page == "200") selected @endif>200</option>
+                          </select>
+                      </div>
+                  </div>
+                  
+              </div>
+          </div>
+
             <hr>
             <div class="text-center">
-                {{$orders->links("pagination::bootstrap-4")}}
+                
             </div>
             </div>
                 <!-- Modal -->
@@ -341,10 +386,8 @@
           </div>
         </div>
       </div>
-
-
-
 @endsection
+@include('orders.action')
 @push('js')
   <script type="text/javascript">
           $('#datatable').DataTable();
@@ -361,6 +404,14 @@
           $("#filterModalLabel").modal('show');
       }
 
+      function onChangeTotalData() {
+          var params = new window.URLSearchParams(window.location.search);
+          var page = Number(params.get('page')) === 0 ? 1 : Number(params.get('page'));
+
+          console.log("......");
+          console.log(base_url);
+      }
+
       document.onreadystatechange = function () {
 
           if (document.readyState == "interactive") {
@@ -369,6 +420,8 @@
               document.getElementById('tanggal_awal').value(date('Y-m-d', strtotime('-3 month')));
           }
       }
+
+      
 
   // $(document).ready(function(){
   //           setDatePicker()

@@ -16,6 +16,7 @@ use App\OrdersLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use GuzzleHttp\Exception\BadResponseException;
 
 class OrdersController extends Controller
 {
@@ -25,6 +26,138 @@ class OrdersController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
+    {
+        // $orders = orders::all();
+        // $orders = \DB::select("SELECT * FROM orders");
+        // dd($request->all());
+
+        // dd(Session::get('client_account_name'));
+        // dd(Session::get('user_role_id') == 1);
+
+        $param=$this->getData($request);
+        // dd($param['data']['rows']);
+        // dd($orders[0]);
+
+        return view('orders.index', $param);
+        
+    }
+
+    public function getData($request) {
+        $tanggal_awal=0;
+        $tanggal_akhir=0;
+        $role_id=Session::get('user_role_id');
+        $cari=$request->get('cari');
+        $max_page=10;
+        $page=1;
+
+        if($request->get('max_page')) {
+            $max_page=$request->get('max_page');
+            $param['max_page']=$max_page;
+        }
+        else {
+            $param['max_page']=$max_page;
+        }
+
+        if($request->get('page')) {
+            $page=$request->get('page');
+            $param['page']=$page;
+        }
+
+        else {
+            $param['page']=$page;
+        }
+
+        $url = "/api/v1/orders?sort_by=id&sort_method=DESC&page=".$page."&max_page=".$max_page;
+
+        $counter = 1;
+        if($request->get('tanggal_awal') != null) {
+            
+            $tanggal_awal=$request->get('tanggal_awal');
+
+            if($counter > 0) {
+            $url = $url."&";
+            } 
+            $url = $url."startingdate=".date("Y-m-d", strtotime($tanggal_awal));
+            $counter += 1;
+        }
+
+        if($request->get('tanggal_akhir') != null) {
+            
+            $tanggal_akhir=$request->get('tanggal_akhir');
+
+            if($counter > 0) {
+            $url = $url."&";
+            } 
+            $url = $url."finishingdate=".date("Y-m-d", strtotime($tanggal_akhir));
+            $counter += 1;
+        }
+
+        if($tanggal_awal == 0) {  
+                      
+            if($counter > 0) {
+            $url = $url."&";
+            } 
+
+            $dateorigin = date("Y-m-d");
+
+            $newDate = date('Y-m-d', strtotime($dateorigin. ' - 90 days'));
+            $url = $url."startingdate=".$newDate;
+            $counter += 1;
+            
+        }
+
+        
+        if($tanggal_akhir == 0) {
+            if($counter > 0) {
+            $url = $url."&";
+            } 
+            $url = $url."finishingdate=".date("Y-m-d");
+            $counter += 1;
+        }
+
+        if($role_id == 1) {
+            if($counter > 0) {
+                $url = $url."&";
+            } 
+            $url = $url."account_name=".Session::get('client_account_name');
+            $counter += 1;
+        }
+
+
+        // hit api
+        // dd($url);
+        try {
+
+            $api_client = config('client_be')->request('GET', $url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . Session::get('token'),
+                    'Accept' => 'application/json'
+                ],
+                'exceptions' => false,
+            ]);
+
+            $data = json_decode($api_client->getBody()->getContents(), TRUE);
+            
+            // dd($data);
+
+            if($data['statusCode'] == 200) {
+                $param['orders']=$data['data']['rows'];
+                $param['total_page']=$data['data']['total_page'];
+                $param['total_data']=$data['data']['total_data'];
+                $param['current_page']=$data['data']['current_page'];
+            }            
+
+            return $param;
+
+        } catch (BadResponseException $e) {
+            $response = json_decode($e->getResponse()->getBody());
+            return json_encode($response);
+        }
+
+
+    }
+
+    public function oldIndex(Request $request)
     {
         // $orders = orders::all();
         // $orders = \DB::select("SELECT * FROM orders");
@@ -406,10 +539,10 @@ class OrdersController extends Controller
     }
 
     //export
-    public function export($page, $tgl_awal, $tgl_akhir, $status, $account_name)
+    public function export($page, $tanggal_awal, $tanggal_akhir, $status, $account_name)
     {
-        $tanggal_awal = $tgl_awal !== null ? $tgl_awal : date('Y-m-d');
-        $tanggal_akhir = $tgl_akhir !== null ? $tgl_akhir : date('Y-m-d');
+        $tanggal_awal = $tanggal_awal !== null ? $tanggal_awal : date('Y-m-d');
+        $tanggal_akhir = $tanggal_akhir !== null ? $tanggal_akhir : date('Y-m-d');
 
         ini_set('memory_limit', '-1');
         return Excel::download(new OrdersExport($page, $tanggal_awal, $tanggal_akhir, $status, $account_name), 'orders.xlsx');
