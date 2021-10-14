@@ -5,6 +5,16 @@
   ])
 
 @section('content')
+<style>
+     .pagination {
+        display: -ms-flexbox;
+    flex-wrap: wrap;
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem;
+    }
+</style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="{{ asset('assets/mask_input/jquery.maskedinput.js') }}"></script>
   <div class="panel-header panel-header-sm">
@@ -173,6 +183,7 @@
                           @endforeach
                       </tbody>
                     </table>
+
                     <nav>
                         <ul class="pagination text-left">
                             <li class="page-item">

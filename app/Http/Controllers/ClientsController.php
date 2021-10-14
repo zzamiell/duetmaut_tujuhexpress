@@ -9,6 +9,11 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use File;
+use Illuminate\Support\Collection;
+
+use Illuminate\Container\Container;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 // export excel
 use Maatwebsite\Excel\Facades\Excel;
@@ -18,8 +23,9 @@ class ClientsController extends Controller
 {
     public function index(Request $request)
     {
+        // dd($request->all());
         // $clients =  DB::table('tb_clients')->paginate(10);
-        $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=' . $request->halaman . '&max_page=10&sort_by=id&sort_method=DESC', [
+        $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=1&max_page=10&sort_by=id&sort_method=DESC', [
             'headers' => [
                 // 'Authorization' => 'Bearer ' . Session::get('token'),
                 'Accept' => 'application/json'
@@ -27,6 +33,10 @@ class ClientsController extends Controller
             'exceptions' => false,
         ]);
         $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data'];
+        // $ceknya = collect($cek['rows']);
+
+        // $clients = CollectionHelper::paginate($ceknya, 10);
+
         $category = DB::table('reff_client_category')->get();
         // dd($clients);
         return view('clients.index', compact('clients', 'category'));
@@ -284,5 +294,41 @@ class ClientsController extends Controller
         } catch (\Exception $e) {
             dd($e);
         }
+    }
+}
+
+class CollectionHelper
+{
+    public static function paginate(Collection $results, $pageSize)
+    {
+        $page = Paginator::resolveCurrentPage('page');
+
+        $total = $results->count();
+
+        return self::paginator($results->forPage($page, $pageSize), $total, $pageSize, $page, [
+            'path' => Paginator::resolveCurrentPath(),
+            'pageName' => 'page',
+        ]);
+    }
+
+    /**
+     * Create a new length-aware paginator instance.
+     *
+     * @param  \Illuminate\Support\Collection  $items
+     * @param  int  $total
+     * @param  int  $perPage
+     * @param  int  $currentPage
+     * @param  array  $options
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    protected static function paginator($items, $total, $perPage, $currentPage, $options)
+    {
+        return Container::getInstance()->makeWith(LengthAwarePaginator::class, compact(
+            'items',
+            'total',
+            'perPage',
+            'currentPage',
+            'options'
+        ));
     }
 }

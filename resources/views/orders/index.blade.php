@@ -182,7 +182,7 @@
 
                 @foreach ($orders as $key => $order )
                 <tr>
-                    <td>{{$order->expected_delivery_date}}</td>
+                  <td>{{$order->expected_delivery_date}}</td>
                   <td>{{ $order->date_requested }}</td>
                   <td>{{ $order->awb }}</td>
                   <td>{{ $order->ref_id }}</td>
