@@ -113,16 +113,16 @@
                         <div class="form-group">
                           <label for="orderStatusSelection">Order Status</label>
                           <select name="order_status" class="form-control" id="orderStatusSelection">
-                            <option value="all" @if(app('request')->input('all') == "all") selected @endif>All</option>
+                            <option value="all" @if(app('request')->input('order_status') == "all") selected @endif>All</option>
                             <option value="info_received" @if(app('request')->input('order_status') == "info_received") selected @endif>Info Received</option>
-                            <option value="pending" @if(app('request')->input('pending') == "pending") selected @endif>Pending</option>
-                            <option value="in_transit" @if(app('request')->input('in_transit') == "in_transit") selected @endif>In Transit</option>
-                            <option value="completed" @if(app('request')->input('completed') == "completed") selected @endif>Completed</option>
-                            <option value="fail_shipper" @if(app('request')->input('fail_shipper') == "fail_shipper") selected @endif>Fail Shipper</option>
-                            <option value="fail_courier" @if(app('request')->input('fail_courier') == "fail_courier") selected @endif>Fail Courier</option>
-                            <option value="fail_recipient" @if(app('request')->input('fail_recipient') == "fail_recipient") selected @endif>Fail Recipient</option>
-                            <option value="fail_attempt_1" @if(app('request')->input('fail_attempt_1') == "fail_attempt_1") selected @endif>Faile Attempt</option>
-                            <option value="cancel" @if(app('request')->input('cancel') == "cancel") selected @endif>Cancel</option>
+                            <option value="pending" @if(app('request')->input('order_status') == "pending") selected @endif>Pending</option>
+                            <option value="in_transit" @if(app('request')->input('order_status') == "in_transit") selected @endif>In Transit</option>
+                            <option value="completed" @if(app('request')->input('order_status') == "completed") selected @endif>Completed</option>
+                            <option value="fail_shipper" @if(app('request')->input('order_status') == "fail_shipper") selected @endif>Fail Shipper</option>
+                            <option value="fail_courier" @if(app('request')->input('order_status') == "fail_courier") selected @endif>Fail Courier</option>
+                            <option value="fail_recipient" @if(app('request')->input('order_status') == "fail_recipient") selected @endif>Fail Recipient</option>
+                            <option value="fail_attempt_1" @if(app('request')->input('order_status') == "fail_attempt_1") selected @endif>Faile Attempt</option>
+                            <option value="cancel" @if(app('request')->input('order_status') == "cancel") selected @endif>Cancel</option>
                           </select>
                         </div>
                       </div>
@@ -213,6 +213,7 @@
             <div class="row">
               <div class="col-5">
               <ul class="pagination">
+                <?php if($total_page > 0) { ?>
                   <li class="page-item {{$current_page == 1 ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page-1)}}">Previous</a></li>
                   <?php for ($i=1; $i<=3 ; $i++){ ?>
                     <li class="page-item {{$i == $current_page ? 'active' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$i}}" id="current_page_id">{{$i}}</a></li>
@@ -233,8 +234,12 @@
 
                       <li class="page-item"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$current_page}}">..</a></li>
                       <li class="page-item {{$total_page == $current_page ? 'active' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$total_page}}">{{$total_page}}</a></li>
-                      
-                  <li class="page-item {{$current_page == $total_page ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page+1)}}">Next</a></li>
+                      <li class="page-item {{$current_page == $total_page ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page+1)}}">Next</a></li>
+                <?php } else { ?>
+                  <li class="page-item {{$current_page == 1 ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page)}}">Previous</a></li>
+                  <li class="page-item"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.$current_page}}">0</a></li>
+                  <li class="page-item {{$current_page == 1 ? 'disabled' : ''}}"><a class="page-link" href="{{'?max_page='.$max_page.'&page='.($current_page)}}">Next</a></li>
+                <?php } ?>                  
               </ul>
                   
               </div>
@@ -320,7 +325,7 @@
                         </button>
                       </div>
 
-                      <!-- <div class="modal-body">
+                      <!-- <div class="modal-body"> -->
                         <form action="{{ route('orders.filter') }}" method="POST" enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <!--Begin input tanggal pembuatan awal -->
@@ -330,7 +335,14 @@
                                   <i class="now-ui-icons arrows-1_minimal-down"></i>
                                 </div>
                               </div>
-                              <input class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" min="{{date('Y-m-d', strtotime('-3 month'))}}" max="{{date('Y-m-d', strtotime('+3 month'))}}" placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_awal" value="{{ old('tanggal_awal') }}" required autofocus>
+                              <input class="form-control {{ $errors->has('tanggal_awal') ? ' is-invalid' : '' }}" 
+                              min="{{date('Y-m-d', strtotime('-3 month'))}}" 
+                              max="{{date('Y-m-d', strtotime('+3 month'))}}" 
+                              placeholder="{{ __('Tanggal Awal Pembuatan (yyyy-MM-dd)') }}" 
+                              type="date" 
+                              name="tanggal_awal" 
+                              id="tanggal_awal"
+                              value="{{ old('tanggal_awal') }}" required autofocus>
                               @if ($errors->has('tanggal_awal'))
                                 <span class="invalid-feedback" style="display: block;" role="alert">
                                   <strong>{{ $errors->first('tanggal_awal') }}</strong>
@@ -345,7 +357,12 @@
                                   <i class="now-ui-icons arrows-1_minimal-up"></i>
                                 </div>
                               </div>
-                              <input class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" min="{{date('Y-m-d', strtotime('-3 month'))}}" max="{{date('Y-m-d', strtotime('+3 month'))}}" placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" type="date" name="tanggal_akhir" value="{{ old('tanggal_akhir') }}" required autofocus>
+                              <input class="form-control {{ $errors->has('tanggal_akhir') ? ' is-invalid' : '' }}" min="{{date('Y-m-d', strtotime('-3 month'))}}" max="{{date('Y-m-d', strtotime('+3 month'))}}" placeholder="{{ __('Tanggal Akhir Pembuatan (yyyy-MM-dd)') }}" 
+                              type="date" 
+                              id="tanggal_akhir"
+                              name="tanggal_akhir" 
+                              value="{{ old('tanggal_akhir') }}" 
+                              required autofocus>
                               @if ($errors->has('tanggal_akhir'))
                                 <span class="invalid-feedback" style="display: block;" role="alert">
                                   <strong>{{ $errors->first('tanggal_akhir') }}</strong>
@@ -386,8 +403,8 @@
           </div>
         </div>
       </div>
-@endsection
 @include('orders.action')
+@endsection
 @push('js')
   <script type="text/javascript">
           $('#datatable').DataTable();
@@ -408,7 +425,7 @@
           var params = new window.URLSearchParams(window.location.search);
           var page = Number(params.get('page')) === 0 ? 1 : Number(params.get('page'));
 
-          console.log("......");
+          console.log("onchange......");
           console.log(base_url);
       }
 
