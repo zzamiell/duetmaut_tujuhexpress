@@ -47,6 +47,7 @@ class OrdersController extends Controller
         $tanggal_akhir=0;
         $role_id=Session::get('user_role_id');
         $cari=$request->get('cari');
+        $order_status=empty($request->get('order_status')) ? "all" : $request->get('order_status');
         $max_page=10;
         $page=1;
 
@@ -104,6 +105,13 @@ class OrdersController extends Controller
             $url = $url."startingdate=".$newDate;
             $counter += 1;
             
+        }
+
+        if($order_status != "all") {
+            if($counter > 0) {
+                $url = $url."&";
+            } 
+            $url = $url."order_status=".$order_status;
         }
 
         
@@ -225,7 +233,22 @@ class OrdersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function filter(Request $request)
+    {
+
+        $tanggal_awal = $request->tanggal_awal !== null ? $request->tanggal_awal : date('Y-m-d', strtotime('-3 months'));
+        $tanggal_akhir = $request->tanggal_akhir !== null ? $request->tanggal_akhir : date('Y-m-d');
+
+        $param=$this->getData($request);
+        $param['tanggal_awal'] = $tanggal_awal;
+        $param['tanggal_akhir'] = $tanggal_akhir;
+
+
+        return view('orders.index', $param);
+    }
+
+    public function filterOld(Request $request)
     {
 
         $tanggal_awal = $request->tanggal_awal !== null ? $request->tanggal_awal : date('Y-m-d', strtotime('-3 months'));
