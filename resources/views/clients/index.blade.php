@@ -39,9 +39,24 @@
                     @endforeach
                 @endif
             </div>
+
             <div class="card-body">
+                <div class="row mt-5">
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6">
+                        <form action="{{route('clients.index')}}" method="get">
+                            <div class="input-group mb-3">
+                                <input type="text" name="cari" value="{{app('request')->input('cari')}}" class="form-control" placeholder="Chilibeli">
+                                <div class="input-group-append">
+                                  <input type="submit" class="input-group-text" id="basic-addon2" value="Cari Clients">
+                                </div>
+                              </div>
+                            </form>
+                        </div>
+                </div>
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table" id="data">
                       <thead class=" text-primary">
                        <th>No</th>
                        <th>acc name</th>
@@ -55,19 +70,13 @@
                        <th>action</th>
                       </thead>
                       <tbody>
-                          @foreach ($clients['rows'] as $key => $item)
                           @php
-                            $batas = $clients['max_page'];
-                            $halaman = isset($clients['current_page'])?(int)$clients['current_page'] : 1;
-                            $halaman_awal = ($halaman>1) ? ($halaman * $batas) - $batas : 0;
-                            $previous = $halaman - 1;
-				            $next = $halaman + 1;
-                            $jumlah_data = $clients['total_data'];
-				            $total_halaman = $clients['total_page'];
-                            $nomor = $halaman_awal+1;
-
-                          $created_at = date("Y-m-d", strtotime($item['created_at']));
+                            $page = (int)$clients['current_page'];
+                            $limit = $clients['max_page'];
+                            $limit_start = ($page - 1) * $limit;
+                            $no = $limit_start + 1;
                           @endphp
+                          @foreach ($clients['rows'] as $key => $item)
                           <tr>
                               <td style="vertical-align: middle;">{{ $key+1 }}</td>
                               <td style="vertical-align: middle;">{{ $item['account_name'] }}</td>
@@ -183,24 +192,74 @@
                           @endforeach
                       </tbody>
                     </table>
+                    <div class="container">
+                        <form action="{{ route('clients.index') }}" method="GET">
+                        <div class="row" style="float: left">
+                            <div class="form-group">
+                                <label class="d-inline-block" style="text-color: black" for="max_page"><strong>Data Perpage : </strong></label>
+                                <select name="max_page" onchange="this.form.submit()" class="form-control form-control-sm d-inline-block" style="width: auto;" id="max_page">
+                                    <option value="10" @if($clients['max_page'] == "10") selected @endif>10</option>
+                                    <option value="50" @if($clients['max_page'] == "50") selected @endif>50</option>
+                                    <option value="100" @if($clients['max_page'] == "100") selected @endif>100</option>
+                                    <option value="200" @if($clients['max_page'] == "200") selected @endif>200</option>
+                                </select>
 
-                    <nav>
-                        <ul class="pagination text-left">
-                            <li class="page-item">
-                                <a class="page-link" <?php if($halaman > 1){ echo "href='?halaman=$Previous'"; } ?>>Previous</a>
-                            </li>
-                            <?php
-                            for($x=1;$x<=$total_halaman;$x++){
-                                ?>
-                                <li class="page-item"><a class="page-link" href="?halaman=<?php echo $x ?>"><?php echo $x; ?></a></li>
-                                <?php
-                            }
-                            ?>
-                            <li class="page-item">
-                                <a  class="page-link" <?php if($halaman < $total_halaman) { echo "href='?halaman=$next'"; } ?>>Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                            </div>
+                        </div>
+                        </form>
+                        <nav class="mt-3">
+                            <ul class="pagination justify-content-end">
+                              @php
+                              $jumlah_page = $clients['total_page'];
+                              $jumlah_number = 1;
+                              $start_number = ($page > $jumlah_number) ? $page - $jumlah_number : 1;
+                              $end_number = ($page < ($jumlah_page - $jumlah_number)) ? $page + $jumlah_number : $jumlah_page;
+                              if ($page == 1 || $page == 0) {
+                                echo '<li class="page-item disabled"><a class="page-link" href="#">First</a></li>';
+                                echo '<li class="page-item disabled"><a class="page-link" href="#"><span aria-hidden="true">&laquo;</span></a></li>';
+                              } else {
+                                $link_prev = ($page > 1) ? $page - 1 : 1;
+                                echo '<li class="page-item"><a class="page-link" href="?page=1">First</a></li>';
+                                echo '<li class="page-item"><a class="page-link" href="?page=' . $link_prev . '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+                              }
+
+                              for ($i = $start_number; $i <= $end_number; $i++) {
+                                $link_active = ($page == $i) ? ' active' : '';
+                                echo '<li class="page-item ' . $link_active . '"><a class="page-link" href="?page=' . $i . '">' . $i . '</a></li>';
+                              }
+
+                              if ($page == $jumlah_page || $page == 0) {
+                                echo '<li class="page-item disabled"><a class="page-link" href="#"><span aria-hidden="true">&raquo;</span></a></li>';
+                                echo '<li class="page-item disabled"><a class="page-link" href="#">Last</a></li>';
+                              } else {
+                                $link_next = ($page < $jumlah_page) ? $page + 1 : $jumlah_page;
+                                echo '<li class="page-item"><a class="page-link" href="?page=' . $link_next . '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>';
+                                echo '<li class="page-item"><a class="page-link" href="?page=' . $jumlah_page . '">Last</a></li>';
+                              }
+                              @endphp
+                            </ul>
+                          </nav>
+                    </div>
+
+            {{-- <div style="float: left">
+                <label>
+                    <span>Sell in</span>
+                    <div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <select class="form-control" name="max_page" id="max_page">
+                                    <option value="10" @if($clients['max_page'] == "10") selected @endif>10</option>
+                                    <option value="50" @if($clients['max_page'] == "50") selected @endif>50</option>
+                                    <option value="100" @if($clients['max_page'] == "100") selected @endif>100</option>
+                                    <option value="200" @if($clients['max_page'] == "200") selected @endif>200</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                  </label>
+            </div> --}}
+
                   </div>
             </div>
           </div>
@@ -284,6 +343,29 @@ aria-hidden="true">
 @endif
 
 <script type="text/javascript">
+
+$(document).ready(function(){
+    // console.log('cek');
+    //   load_data();
+    //   function load_data(page){
+    //       console.log('masuk ke ajax');
+    //       console.log(page);
+    //        $.ajax({
+    //             url:"{{url('/clients/index')}}",
+    //             method:"GET",
+    //             data:{page:page},
+    //             success:function(data){
+    //                  $('#data').html(data);
+    //             }
+    //        })
+    //   }
+
+    //   $(document).on('click', '.halaman', function(){
+    //        var page = $(this).attr("id");
+    //        load_data(page);
+    //   });
+ });
+
     jQuery(function($){
 $("#cod").mask("99%");
 $("#insurance").mask("99%");

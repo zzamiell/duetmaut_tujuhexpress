@@ -24,18 +24,32 @@ class ClientsController extends Controller
     public function index(Request $request)
     {
         // dd($request->all());
-        // $clients =  DB::table('tb_clients')->paginate(10);
-        $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=1&max_page=10&sort_by=id&sort_method=DESC', [
+
+        if (isset($request->max_page)) {
+            $max_page = $request->max_page;
+        } else {
+            $max_page = 10;
+        }
+
+        if (isset($request->page)) {
+            $page = $request->page;
+        } else {
+            $page = 1;
+        }
+
+        if (isset($request->cari)) {
+            $cari = "&account_name=" . $request->cari;
+        } else {
+            $cari = null;
+        }
+
+        $api_client = config('client_be')->request('GET', '/api/v1/tb-clients?page=' . $page . '&max_page=' . $max_page . '&sort_by=id&sort_method=DESC' . $cari . '', [
             'headers' => [
-                // 'Authorization' => 'Bearer ' . Session::get('token'),
                 'Accept' => 'application/json'
             ],
             'exceptions' => false,
         ]);
         $clients = json_decode($api_client->getBody()->getContents(), TRUE)['data'];
-        // $ceknya = collect($cek['rows']);
-
-        // $clients = CollectionHelper::paginate($ceknya, 10);
 
         $category = DB::table('reff_client_category')->get();
         // dd($clients);
