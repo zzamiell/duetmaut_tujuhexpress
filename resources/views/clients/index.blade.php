@@ -196,7 +196,7 @@
                         <form action="{{ route('clients.index') }}" method="GET">
                         <div class="row" style="float: left">
                             <div class="form-group">
-                                <label class="d-inline-block" style="text-color: black" for="max_page"><strong>Data Perpage : </strong></label>
+                                <label class="d-inline-block" style="text-color: black" for="max_page"><strong>Total Data : </strong></label>
                                 <select name="max_page" onchange="this.form.submit()" class="form-control form-control-sm d-inline-block" style="width: auto;" id="max_page">
                                     <option value="10" @if($clients['max_page'] == "10") selected @endif>10</option>
                                     <option value="50" @if($clients['max_page'] == "50") selected @endif>50</option>
